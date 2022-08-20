@@ -21,16 +21,16 @@ class Page {
         <img class="root__burger" src="assets/burger.svg" alt="menu">
         <aside class="aside">
           <ul>
-            <li>Главная страница</li>
-            <li>Авторизация</li>
-            <li>Электорнный учебник</li>
-            <li>Мини-игры
+            <li class="aside__el">Главная страница</li>
+            <li class="aside__el">Авторизация</li>
+            <li class="aside__el">Электорнный учебник</li>
+            <li><span class="aside__el">Мини-игры</span> 
               <ul class="aside__games">
-                <li>Аудиовызов</li>
-                <li>Спринт</li>
+                <li class="aside__el">Аудиовызов</li>
+                <li class="aside__el">Спринт</li>
               </ul>
             </li>
-            <li>Статистика</li>
+            <li class="aside__el">Статистика</li>
           </ul>
         </aside>
         `;

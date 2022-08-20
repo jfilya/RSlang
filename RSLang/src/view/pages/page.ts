@@ -13,7 +13,23 @@ class Page {
     const main = document.createElement('div');
     main.className = 'main';
     root.append(main);
-    main.innerHTML += this.main();
+    main.innerHTML = this.main();
+    this.startPage();
+  }
+
+  header(): string {
+    return `
+        <header class="header">
+        <nav class="header__menu">
+          <h2 class="header__title">RSlang</h2>
+          <img
+            class="header__register"
+            src="assets/register.svg"
+            alt="register"
+          />
+        </nav>
+      </header>
+        `;
   }
 
   aside(): string {
@@ -21,16 +37,11 @@ class Page {
         <img class="root__burger" src="assets/burger.svg" alt="menu">
         <aside class="aside">
           <ul>
-            <li class="aside__el">Главная страница</li>
-            <li class="aside__el">Авторизация</li>
-            <li class="aside__el">Электорнный учебник</li>
-            <li><span class="aside__el">Мини-игры</span> 
-              <ul class="aside__games">
-                <li class="aside__el">Аудиовызов</li>
-                <li class="aside__el">Спринт</li>
-              </ul>
-            </li>
-            <li class="aside__el">Статистика</li>
+            <li class="aside__el home">Главная</li>
+            <li class="aside__el authorization">Авторизация</li>
+            <li class="aside__el book">Учебник</li>
+            <li class="aside__el game">Мини-игры</li>
+            <li class="aside__el statistic">Статистика</li>
           </ul>
         </aside>
         `;
@@ -39,13 +50,19 @@ class Page {
   main(): string {
     return `
         ${this.header()}
-        ${this.sectionStart()}
+        <section class="work">
+        </section>
         ${this.footer()}
         `;
   }
 
+  startPage(): void {
+    const workPages = document.querySelector('.work') as HTMLElement;
+    workPages.innerHTML = this.sectionStart();
+  }
+
   sectionStart(): string {
-    return `<section class="work-pages">
+    return `<div class="work-pages">
     <div class="work-pages__container">
       <div class="start-page">
         <h1 class="start-page__title">Сonversation games in english</h1>
@@ -116,22 +133,26 @@ class Page {
       </div>
     </div>
     <img class="work-pages__img" src="assets/back.png" alt="back">
-  </section>`;
+    </div>`;
   }
 
-  header(): string {
+  sectionBook(): string {
     return `
-        <header class="header">
-        <nav class="header__menu">
-          <h2 class="header__title">RSlang</h2>
-          <img
-            class="header__register"
-            src="assets/register.svg"
-            alt="register"
-          />
-        </nav>
-      </header>
-        `;
+    <h3>Учебник</h3>
+    `;
+  }
+
+  sectionGame(): string {
+    return `
+    <h3>Мини игры</h3>
+    `;
+  }
+
+  sectionStatistic(): string {
+    return `
+    <h3>Статистика</h3>
+    <p>Доступно только для зарегестрированный пользователей</p>
+    `;
   }
 
   footer(): string {

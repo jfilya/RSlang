@@ -5,4 +5,5 @@ import Page from './view/pages/page';
 const page = new Page();
 page.root();
 const menu = new Menu();
+menu.buildPages();
 menu.active();

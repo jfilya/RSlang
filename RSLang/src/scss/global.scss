@@ -221,3 +221,30 @@ body {
         }
     }
 }
+@media screen and (max-width: 1000px) {
+    .work-pages {
+        flex-direction: column;
+    }
+    .team {
+        &__list {
+            flex-wrap: wrap;
+            justify-content: space-around;
+            li {
+                margin-top: 0px;
+            }
+        }
+    }
+    .footer {
+        &__list {
+            padding: 0 30px;
+            flex-wrap: wrap;
+        }
+    }
+}
+@media screen and (max-width: 670px) {
+    .footer {
+        &__container {
+            height: 130px;
+        }
+    }
+}

@@ -107,6 +107,7 @@ body {
         background: #ffc001;
         height: 100%;
         @include center;
+        flex-direction: column;
         padding: 0px 20px;
         a {
             transition: 0.2s;

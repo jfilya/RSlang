@@ -109,7 +109,7 @@ class Page {
                 />
               </svg>
               <span> Stepan Volkov</span></a>
-              <p>Team Lead</p>
+              <p>Реализация авторизации и регистрации пользователя</p>
           </li>
           <li>
             <img src="assets/Oleksander.jpeg" alt="Oleksander">
@@ -163,6 +163,7 @@ class Page {
             <a href="https://rs.school/js/" target="_blank"
               ><img src="assets/logo-school.svg" alt="logo-schoo"
             /></a>
+            <p>2022</p>
           </div>
           <div class="footer__black">
             <ul class="footer__list">

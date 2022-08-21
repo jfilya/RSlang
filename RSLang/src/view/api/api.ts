@@ -164,13 +164,19 @@ export class BackendAPI {
             return null;
         }
 
-        return await (await (fetch(`${BASE_URL}/users/${id}/aggregatedWords?group=${group}&page=${page}&wordsPerPage=${wordsPerPage}&filter=${JSON.stringify(filter)}`, {
+        return await (await (fetch(`${BASE_URL}/users/${id}/aggregatedWords?${new URLSearchParams({
+            group: String(group || '0'),
+            page: String(page || '0'),
+            wordsPerPage: String(wordsPerPage || '20'),
+            filter: JSON.stringify(filter)
+         })}`, {
+            method: 'GET',
             headers: {
-                'Authorization': `Bearer ${token}`,
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
+               'Authorization': `Bearer ${token}`,
+               'Accept': 'application/json',
+               'Content-Type': 'application/json'
             },
-        }))).json();
+       }))).json();
     }
 
     static async getAggregatedWordsById(id: string, wordId: string): Promise<TUserWords | null> {

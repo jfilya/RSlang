@@ -63,7 +63,7 @@ export class BackendAPI {
     }
 
 
-    static async deleteUserByID(id: string, email: string, password: string): Promise<void | null> {
+    static async deleteUserByID(id: string): Promise<void | null> {
         let token = getToken();
         if (!token) {
             return null;
@@ -129,7 +129,6 @@ export class BackendAPI {
             'Content-Type': 'application/json'
         }}))).json();
     }
-
 
     //другой айди для слова, отличающийся от метода POST
     static async updateUserWord(id: string, wordId: string, difficulty: string, optional = {}): Promise<TUserWords | null> {

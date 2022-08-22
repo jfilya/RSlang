@@ -1,4 +1,4 @@
 import './scss/global.scss';
-import { BackendAPI } from './controller/api/api';
+import { BackendAPIController } from './controller/api/api';
 
-BackendAPI.signIn('mail@mail.ru', 'aokadadadsljhgugvguuvuu').then(res => BackendAPI.getAllAggregatedWords('630244fcbe44cf0016ddcae9', 0, 1, 20).then(res=>console.log(res)));
+BackendAPIController.signIn('mail@mail.ru', 'aokadadadsljhgugvguuvuu').then(() => BackendAPIController.getAllWords(0, 0).then(res=>console.log(res)));

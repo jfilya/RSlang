@@ -1,4 +1,4 @@
-import { TSingInResponse, TUser, TWord, TUserWords, TStatisticsResp, TUserSettings } from "./types";
+import { ISingInResponse, IUser, IWord, IUserWords, IStatisticsResp, IUserSettings } from "./interfaces";
 import { tokenKey, getToken } from "./localStorageHelper";
 
 const BASE_URL  = 'https://rs-lang-project-for-rs-school.herokuapp.com';
@@ -8,7 +8,7 @@ export class BackendAPIController {
     }
     
     static async signIn(email: string, password: string) {
-        const resp : TSingInResponse = await (await fetch(`${BASE_URL}/signin`, {method: 'POST', 
+        const resp : ISingInResponse = await (await fetch(`${BASE_URL}/signin`, {method: 'POST', 
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
@@ -18,8 +18,8 @@ export class BackendAPIController {
         return resp.userId;
     }
 
-    static async createUser(user : TUser): Promise<TUser> {
-        const resp : TUser = await (await fetch(`${BASE_URL}/users`, {method: 'POST',
+    static async createUser(user : IUser): Promise<IUser> {
+        const resp : IUser = await (await fetch(`${BASE_URL}/users`, {method: 'POST',
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
@@ -28,15 +28,15 @@ export class BackendAPIController {
         return resp;
     }
 
-    static async getAllWords(page: number, group: number): Promise<TWord[]> {
+    static async getAllWords(page: number, group: number): Promise<IWord[]> {
         return await (await (fetch(`${BASE_URL}/words?page=${page}&group=${group}`))).json();
     }
 
-    static async getWordByID(id: string): Promise<TWord> {
+    static async getWordByID(id: string): Promise<IWord> {
         return await (await (fetch(`${BASE_URL}/words/${id}`))).json();
     }
 
-    static async getUserByID(id: string): Promise<TUser | null> {
+    static async getUserByID(id: string): Promise<IUser | null> {
         let token = getToken();
         if (!token) {
             return null;
@@ -49,7 +49,7 @@ export class BackendAPIController {
         }}))).json();
     }
 
-    static async updateUserByID(id: string, email: string, password: string): Promise<TUser | null> {
+    static async updateUserByID(id: string, email: string, password: string): Promise<IUser | null> {
         let token = getToken();
         if (!token) {
             return null;
@@ -76,12 +76,12 @@ export class BackendAPIController {
         }}));
     }
 
-    static async getNewToken(id: string): Promise<TSingInResponse | null> {
+    static async getNewToken(id: string): Promise<ISingInResponse | null> {
         let token = getToken();
         if (!token) {
             return null;
         }
-        const newToken : TSingInResponse = await (await (fetch(`${BASE_URL}/users/${id}/tokens`, {headers: {
+        const newToken : ISingInResponse = await (await (fetch(`${BASE_URL}/users/${id}/tokens`, {headers: {
             'Authorization': `Bearer ${token}`,
             'Accept': 'application/json',
             'Content-Type': 'application/json'
@@ -91,7 +91,7 @@ export class BackendAPIController {
         return newToken;
     }
 
-    static async createUserWord(id: string, wordId: string, difficulty: string, optional = {}): Promise<TUserWords | null> {
+    static async createUserWord(id: string, wordId: string, difficulty: string, optional = {}): Promise<IUserWords | null> {
         let token = getToken();
         if (!token) {
             return null;
@@ -104,7 +104,7 @@ export class BackendAPIController {
         }, body: JSON.stringify({difficulty, optional})}))).json();
     }
 
-    static async getAllUserWords(id: string): Promise<TUserWords[] | null> {
+    static async getAllUserWords(id: string): Promise<IUserWords[] | null> {
         let token = getToken();
         if (!token) {
             return null;
@@ -117,7 +117,7 @@ export class BackendAPIController {
         }}))).json();
     }
 
-    static async getSingleUserWord(id: string, wordId: string): Promise<TUserWords | null> {
+    static async getSingleUserWord(id: string, wordId: string): Promise<IUserWords | null> {
         let token = getToken();
         if (!token) {
             return null;
@@ -131,7 +131,7 @@ export class BackendAPIController {
     }
 
     //другой айди для слова, отличающийся от метода POST
-    static async updateUserWord(id: string, wordId: string, difficulty: string, optional = {}): Promise<TUserWords | null> {
+    static async updateUserWord(id: string, wordId: string, difficulty: string, optional = {}): Promise<IUserWords | null> {
         let token = getToken();
         if (!token) {
             return null;
@@ -157,7 +157,7 @@ export class BackendAPIController {
         }}));
     }
 
-    static async getAllAggregatedWords(id: string, page: number, group: number, wordsPerPage: number, filter = {}): Promise<TWord[] | null> {
+    static async getAllAggregatedWords(id: string, page: number, group: number, wordsPerPage: number, filter = {}): Promise<IWord[] | null> {
         let token = getToken();
         if (!token) {
             return null;
@@ -178,7 +178,7 @@ export class BackendAPIController {
        }))).json();
     }
 
-    static async getAggregatedWordsById(id: string, wordId: string): Promise<TUserWords | null> {
+    static async getAggregatedWordsById(id: string, wordId: string): Promise<IUserWords | null> {
         let token = getToken();
         if (!token) {
             return null;
@@ -193,7 +193,7 @@ export class BackendAPIController {
         }))).json();
     }
 
-    static async getUserStatistics(id: string): Promise<TStatisticsResp | null> {
+    static async getUserStatistics(id: string): Promise<IStatisticsResp | null> {
         let token = getToken();
         if (!token) {
             return null;
@@ -208,7 +208,7 @@ export class BackendAPIController {
         }))).json();
     }
 
-    static async updateUserStatistics(id: string, learnedWords: number, optional = {}): Promise<TStatisticsResp | null> {
+    static async updateUserStatistics(id: string, learnedWords: number, optional = {}): Promise<IStatisticsResp | null> {
         let token = getToken();
         if (!token) {
             return null;
@@ -221,7 +221,7 @@ export class BackendAPIController {
         }, body: JSON.stringify({learnedWords, optional})}))).json();
     }
 
-    static async getUserSettings(id: string): Promise<TUserSettings | null> {
+    static async getUserSettings(id: string): Promise<IUserSettings | null> {
         let token = getToken();
         if (!token) {
             return null;
@@ -235,7 +235,7 @@ export class BackendAPIController {
         }))).json();
     }
 
-    static async updateUserSettings(id: string, wordsPerDay: number, optional = {}): Promise<TUserSettings | null> {
+    static async updateUserSettings(id: string, wordsPerDay: number, optional = {}): Promise<IUserSettings | null> {
         let token = getToken();
         if (!token) {
             return null;
@@ -247,5 +247,4 @@ export class BackendAPIController {
             'Content-Type': 'application/json'
         }, body: JSON.stringify({wordsPerDay, optional})}))).json();
     }
-
 }

@@ -1,4 +1,4 @@
-export type TSingInResponse = {
+export interface ISingInResponse {
     message: string,
     token: string,
     refreshToken: string,
@@ -6,13 +6,13 @@ export type TSingInResponse = {
     name: string
 }
 
-export type TUser = {
+export interface IUser {
     name: string,
     email: string,
     password: string
 }
 
-export type TWord = {
+export interface IWord {
     id: string,
     group: number,
     page: number,
@@ -29,17 +29,17 @@ export type TWord = {
     textExampleTranslate: string
 }
 
-export type TUserWords = {
+export interface IUserWords {
     difficulty: string,
     optional: {}
 }
 
-export type TStatisticsResp = {
+export interface IStatisticsResp {
     learnedWords: number,
     optional: {}
 }
 
-export type TUserSettings = {
+export interface IUserSettings {
     wordsPerDay: number,
     optional: {}
 }

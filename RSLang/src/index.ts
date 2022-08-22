@@ -1,6 +1,6 @@
 import './scss/global.scss';
 import Menu from './utils/menu';
-import Page from './view/pages/page';
+import Page from './view/page';
 
 const page = new Page();
 page.root();

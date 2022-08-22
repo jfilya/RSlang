@@ -1,27 +1,28 @@
-import Page from '../view/pages/page';
+import Page from '../view/page';
+import Book from '../view/pages/book';
+import Game from '../view/pages/game';
+import Home from '../view/pages/home';
+import Statistic from '../view/pages/statistic';
 
 class Menu {
   aside: HTMLElement;
 
-  home: HTMLElement;
+  home: Home;
 
-  authorization: HTMLElement;
+  book: Book;
 
-  book: HTMLElement;
+  game: Game;
 
-  game: HTMLElement;
-
-  statistic: HTMLElement;
+  statistic: Statistic;
 
   page: Page;
 
   constructor() {
     this.aside = document.querySelector('.aside') as HTMLElement;
-    this.home = document.querySelector('.home') as HTMLElement;
-    this.authorization = document.querySelector('.authorization') as HTMLElement;
-    this.book = document.querySelector('.book') as HTMLElement;
-    this.game = document.querySelector('.game') as HTMLElement;
-    this.statistic = document.querySelector('.statistic') as HTMLElement;
+    this.home = new Home();
+    this.book = new Book();
+    this.game = new Game();
+    this.statistic = new Statistic();
     this.page = new Page();
   }
 
@@ -33,23 +34,28 @@ class Menu {
   }
 
   buildPages(): void {
-    this.home.onclick = () => {
-      this.page.startPage();
+    const homeLink = document.querySelector('.home') as HTMLElement;
+    const authorizationLink = document.querySelector('.authorization') as HTMLElement;
+    const bookLink = document.querySelector('.book') as HTMLElement;
+    const gameLink = document.querySelector('.game') as HTMLElement;
+    const statisticLink = document.querySelector('.statistic') as HTMLElement;
+    homeLink.onclick = () => {
+      this.home.startPage();
     };
-    this.authorization.onclick = () => {
+    authorizationLink.onclick = () => {
       console.log('authorization');
     };
-    this.book.onclick = () => {
+    bookLink.onclick = () => {
       const workPages = document.querySelector('.work') as HTMLElement;
-      workPages.innerHTML = this.page.sectionBook();
+      workPages.innerHTML = this.book.sectionBook();
     };
-    this.game.onclick = () => {
+    gameLink.onclick = () => {
       const workPages = document.querySelector('.work') as HTMLElement;
-      workPages.innerHTML = this.page.sectionGame();
+      workPages.innerHTML = this.game.sectionGame();
     };
-    this.statistic.onclick = () => {
+    statisticLink.onclick = () => {
       const workPages = document.querySelector('.work') as HTMLElement;
-      workPages.innerHTML = this.page.sectionStatistic();
+      workPages.innerHTML = this.statistic.sectionStatistic();
     };
   }
 }

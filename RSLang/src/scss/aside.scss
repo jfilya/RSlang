@@ -1,0 +1,32 @@
+@import './color.scss';
+.aside {
+    color: $backgroundColor;
+    background: $assideColor;
+    align-items: start;
+    flex-direction: column;
+    align-items: start;
+    padding: 30px;
+    &__el {
+        cursor: pointer;
+        margin: 10px;
+        transition: 0.2s;
+        &:hover {
+            color: $highlightImportant;
+        }
+    }
+    &__games {
+        padding-left: 20px;
+        li {
+            list-style-type: circle;
+        }
+    }
+}
+@media screen and (max-width: 670px) {
+    .aside {
+        display: none;
+        position: absolute;
+        height: 100vh;
+        padding-top: 50px;
+        z-index: 4;
+    }
+}

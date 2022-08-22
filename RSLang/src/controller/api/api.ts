@@ -3,7 +3,7 @@ import { tokenKey, getToken } from "./localStorageHelper";
 
 const BASE_URL  = 'https://rs-lang-project-for-rs-school.herokuapp.com';
 
-export class BackendAPI {
+export class BackendAPIController {
     constructor() {
     }
     

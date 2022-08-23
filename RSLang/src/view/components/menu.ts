@@ -1,8 +1,8 @@
-import Page from '../view/page';
-import Book from '../view/pages/book';
-import Game from '../view/pages/game';
-import Home from '../view/pages/home';
-import Statistic from '../view/pages/statistic';
+import Page from '../page';
+import Book from '../pages/book';
+import Game from '../pages/game';
+import Home from '../pages/home';
+import Statistic from '../pages/statistic';
 
 class Menu {
   aside: HTMLElement;

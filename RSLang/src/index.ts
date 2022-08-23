@@ -1,5 +1,5 @@
 import './scss/global.scss';
-import Menu from './utils/menu';
+import Menu from './view/components/menu';
 import Page from './view/page';
 
 const page = new Page();

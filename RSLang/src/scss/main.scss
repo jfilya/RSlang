@@ -1,0 +1,7 @@
+@import './mixin.scss';
+.main {
+    width: 100%;
+    min-height: 100vh;
+    @include stretch-width;
+    flex-direction: column;
+}

@@ -1,0 +1,83 @@
+@import './aside.scss';
+@import './color.scss';
+@import './footer.scss';
+@import './header.scss';
+@import './home.scss';
+@import './main.scss';
+@import './mixin.scss';
+
+* {
+    box-sizing: border-box;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+a,
+ul,
+li,
+body,
+input,
+button {
+    margin: 0;
+    padding: 0;
+}
+a {
+    text-decoration: none;
+    color: $backgroundColor;
+    cursor: pointer;
+}
+ul,
+li {
+    list-style-type: none;
+}
+input {
+    outline: none;
+}
+button {
+    cursor: pointer;
+    outline: none;
+    background: transparent;
+    border: none;
+}
+body {
+    font-family: sans-serif;
+    font-weight: 400;
+    background: $backgroundColor;
+    color: $colorText;
+    padding: 0;
+    margin: 0;
+    position: relative;
+    font-size: 16px;
+    line-height: 26px;
+    min-width: 320px;
+    overflow-x: hidden;
+}
+.root {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    justify-content: space-between;
+    &__burger {
+        position: absolute;
+        left: 20px;
+        top: 20px;
+        display: none;
+    }
+}
+
+
+@media screen and (max-width: 670px) {
+    .root {
+        &__burger {
+            display: flex;
+            z-index: 5;
+        }
+    }
+    .burger-active {
+        display: flex;
+    }
+}

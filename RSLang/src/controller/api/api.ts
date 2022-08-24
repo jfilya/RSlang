@@ -242,7 +242,7 @@ export default class BackendAPIController {
         Accept: 'application/json',
         'Content-Type': 'application/json',
       },
-    }))).json();
+    }))).json().then((req) => req[0].paginatedResults);
   }
 
   static async getAggregatedWordsById(id: string, wordId: string): Promise<IUserWords | null> {

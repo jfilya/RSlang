@@ -1,0 +1,41 @@
+.login__popup__wrapper {
+    position: fixed;
+    top: 30%;
+    right: -9999px;
+    z-index: 5;
+    background-color: azure;
+    width: 300px;
+    height: 150px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.login__background {
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    right: -9999px;
+    background: rgba(0,0,0,.8);
+}
+
+.register__popup__wrapper {
+    position: fixed;
+    top: 30%;
+    right: -9999px;
+    z-index: 5;
+    background-color: azure;
+}
+
+.login__popup__wrapper_active {
+    right: calc(50vw - 150px);
+}
+
+.login__background_active {
+    right: 0;
+}
+
+.register__popup__wrapper_active {
+    right: 50%;
+}

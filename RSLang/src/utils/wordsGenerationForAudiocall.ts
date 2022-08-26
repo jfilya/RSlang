@@ -4,7 +4,7 @@ interface IAudioCallGame {
   translation: string,
   audioDescription: string,
   fakeWords: string[],
-  rightOrWrong: boolean
+  rightOrWrong: boolean,
 }
 
 const randomizer = (fakeWords: IWord[]) => {

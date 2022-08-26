@@ -1,3 +1,4 @@
+import { BASE_URL } from '../../controller/api/api';
 import BackendAPIController from '../../controller/api/api';
 import { IWord } from '../../controller/api/interfaces';
 import { IAudioCallGame, generateWordsForGame } from '../../utils/wordsGenerationForAudiocall';
@@ -17,6 +18,8 @@ const startGameConfig = {
   allLevel: 0,
   wordsForGame: [],
 };
+
+const urlAudioFile = BASE_URL + '/';
 
 class Audiocall {
   groups: number[] | string[];
@@ -78,6 +81,12 @@ class Audiocall {
     </div>`;
   }
 
+  // audio
+  playAudio() {
+    const audio = new Audio(urlAudioFile + this.gameConfig.wordsForGame[this.gameConfig.currentLevel].audioDescription);
+    audio.play();
+  }
+
   // answers
   getAnswerControllers = () => [
     document.querySelector('.answer-button__container'),
@@ -90,11 +99,7 @@ class Audiocall {
       buttons[i].textContent = answer;
     });
 
-  startGame(realWords: IWord[], fakeWords: IWord[]) {
-    const wordsForGame = realWords.map((word) => generateWordsForGame(word, fakeWords));
-
-    this.gameConfig = { ...startGameConfig, wordsForGame, allLevel: wordsForGame.length - 1 };
-
+  showGame() {
     this.container.innerHTML = `
       ${this.heartGenerate(5)}
       <button class="audio__btn">Повтор звука</button>
@@ -104,12 +109,14 @@ class Audiocall {
     this.answerController();
 
     document.querySelector('.audio__btn')?.addEventListener('click', () => {
-      /* TODO
-        @
-        @ repeat audio
-        @
-        */
+      this.playAudio();
     });
+  }
+
+  startGame(realWords: IWord[], fakeWords: IWord[]) {
+    const wordsForGame = realWords.map((word) => generateWordsForGame(word, fakeWords));
+    this.gameConfig = { ...startGameConfig, wordsForGame, allLevel: wordsForGame.length - 1 };
+    this.showGame();
   }
 
   checkAnswer = (answer: string): boolean => 
@@ -131,6 +138,7 @@ class Audiocall {
       && this.gameConfig.currentLevel < this.gameConfig.allLevel
     ) {
       this.gameConfig.currentLevel += 1;
+      this.playAudio();
       this.packageAnswers(allAnswerButton as Element[]);
     } else {
       this.endGame();
@@ -140,6 +148,7 @@ class Audiocall {
   answerController = () => {
     const [answerContainer, allAnswerButton] = this.getAnswerControllers();
     this.packageAnswers(allAnswerButton as Element[]);
+    this.playAudio();
 
     (answerContainer as HTMLElement).addEventListener('click', ({ target }: Event) => {
       const element = target as HTMLElement;
@@ -159,13 +168,18 @@ class Audiocall {
   };
 
   endGame() {
-    alert('GAME OVER');
-    /* TODO
-      @
-      @ send game result to back-end
-      @ display game result
-      @
-    */
+    this.container.innerHTML = `
+      <ul class="results">
+        ${this.gameConfig.wordsForGame.slice(0, this.gameConfig.currentLevel + 1).map(({rightOrWrong, translation}) =>
+          `<li class="results__elems">${translation} – ${rightOrWrong ? 'Угадано!' : 'Не угадали!'}</li>`
+        ).join('')}
+      </ul>
+      <button class="reset_the_game">Попробовать снова</button>`;
+    document.querySelector('.reset_the_game')?.addEventListener('click', () => {
+      this.gameConfig.currentHearts = this.gameConfig.allHearts;
+      this.gameConfig.currentLevel = 0;
+      this.showGame();
+    });
   }
 
   // при переходе из учебника должен работать этот метод
@@ -185,17 +199,17 @@ class Audiocall {
     }, 0);
 
     return `
-    <h2>Audiocall</h2>
+    <h2 class="audiocall__title">Audiocall</h2>
     <p>Тренировка Аудиовызов развивает словарный запас. Вы должны выбрать перевод услышанного слова. Выберите сложность от 1 до 6:</p>
     <ul class="group_of_words">
       ${this.groups
-    .map((el) => `<li class="group_of_words__elem" data-value=${el}>${el}</li>`)
+    .map((el) => `<li class="group_of_words__elem" data-value=${el}>${Number(el)+1}</li>`)
     .join('')}
     </ul>
     `;
   }
 
-  render(startTheGame: IWord[]) {
+  render(startTheGame: IWord[] | null) {
     setTimeout(() => {
       this.container = document.querySelector('.audiocall__game') as HTMLElement;
     }, 0);

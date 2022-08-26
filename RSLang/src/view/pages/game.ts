@@ -2,14 +2,10 @@ import Audiocall from './audiocall';
 
 //  must have render method
 class Game {
-  selectGame(game: Audiocall) {
-    const initialize = new game();
-    const workPages = document.querySelector('.work') as HTMLElement;
-    workPages.innerHTML = initialize.render();
-  }
-
   audiocall() {
-    this.selectGame(Audiocall);
+    const initialize = new Audiocall();
+    const workPages = document.querySelector('.work') as HTMLElement;
+    workPages.innerHTML = initialize.render(null);
   }
 
   sectionGame(): string {
@@ -19,8 +15,12 @@ class Game {
       });
     }, 0);
     return `
-        <h3>Мини игры</h3>
-        <button class="audiocall__btn">Аудиовызов</button>
+        <h3 class="games__title">Мини игры</h3>
+        <div class="games">
+          <button class="game__btn audiocall__btn">Аудиовызов</button>
+          <button class="game__btn">Спринт</button>
+        </div>
+        
         `;
   }
 }

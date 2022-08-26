@@ -1,6 +1,6 @@
-import Audiocall from "./audiocall";
+import Audiocall from './audiocall';
 
-//must have render method
+//  must have render method
 class Game {
   selectGame(game: Audiocall) {
     const initialize = new game();
@@ -14,7 +14,7 @@ class Game {
 
   sectionGame(): string {
     setTimeout(() => {
-      document.querySelector('.audiocall__btn')?.addEventListener('click', ()=> {
+      document.querySelector('.audiocall__btn')?.addEventListener('click', () => {
         this.audiocall();
       });
     }, 0);

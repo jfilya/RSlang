@@ -1,7 +1,15 @@
 @import './mixin.scss';
 .main {
-    width: 100%;
+    width: calc(100% - 116px);
     min-height: 100vh;
     @include stretch-width;
     flex-direction: column;
+}
+.work {
+    min-width: 100%;
+}
+@media screen and (max-width: 670px) {
+    .main {
+        width: 100%;
+    }
 }

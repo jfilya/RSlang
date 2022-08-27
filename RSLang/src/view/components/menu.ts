@@ -3,6 +3,8 @@ import Book from '../pages/book';
 import Game from '../pages/game';
 import Home from '../pages/home';
 import Statistic from '../pages/statistic';
+import BackendAPIController from '../../controller/api/api';
+import { IWord } from '../../controller/api/interfaces';
 
 class Menu {
   aside: HTMLElement;
@@ -41,21 +43,38 @@ class Menu {
     const statisticLink = document.querySelector('.statistic') as HTMLElement;
     homeLink.onclick = () => {
       this.home.startPage();
+      if (window.innerWidth <= 670) {
+        this.aside.classList.remove('burger-active');
+      }
     };
     authorizationLink.onclick = () => {
       console.log('authorization');
+      if (window.innerWidth <= 670) {
+        this.aside.classList.remove('burger-active');
+      }
     };
-    bookLink.onclick = () => {
+    bookLink.onclick = async () => {
       const workPages = document.querySelector('.work') as HTMLElement;
       workPages.innerHTML = this.book.sectionBook();
+      this.book.bookItem(await BackendAPIController.getAllWords(0, 0) as unknown as IWord[]);
+      this.book.pagination(0);
+      if (window.innerWidth <= 670) {
+        this.aside.classList.remove('burger-active');
+      }
     };
     gameLink.onclick = () => {
       const workPages = document.querySelector('.work') as HTMLElement;
       workPages.innerHTML = this.game.sectionGame();
+      if (window.innerWidth <= 670) {
+        this.aside.classList.remove('burger-active');
+      }
     };
     statisticLink.onclick = () => {
       const workPages = document.querySelector('.work') as HTMLElement;
       workPages.innerHTML = this.statistic.sectionStatistic();
+      if (window.innerWidth <= 670) {
+        this.aside.classList.remove('burger-active');
+      }
     };
   }
 }

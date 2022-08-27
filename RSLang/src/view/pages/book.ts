@@ -2,16 +2,25 @@ import BackendAPIController from '../../controller/api/api';
 import { IWord } from '../../controller/api/interfaces';
 
 class Book {
+  color: string;
+
+  numberHard: number;
+
+  constructor() {
+    this.color = '';
+    this.numberHard = 0;
+  }
+
   sectionBook(): string {
     return `
     <ul class="hardest-words">
-      <li>1</li>
-      <li>2</li>
-      <li>3</li>
-      <li>4</li>
-      <li>5</li>
-      <li>6</li>
-      <li>7</li>
+      <li color="pink">1</li>
+      <li color="blue">2</li>
+      <li color="turquoise">3</li>
+      <li color="purple">4</li>
+      <li color="green">5</li>
+      <li color="yellow">6</li>
+      <li color="hard">7</li>
     </ul>
     <div class="pagination">
     <button class="pagination__arrow  disableBtn" id="arrowPrev">
@@ -53,8 +62,24 @@ class Book {
     });
   }
 
-  pagination(number: number): void {
+  backgroundWordsCard(number: number): void {
+    const hardWords = document.querySelectorAll('.hardest-words li') as unknown as HTMLLIElement[];
+    hardWords.forEach((el, i) => {
+      if (i === number) {
+        this.color = el.getAttribute('color') as string;
+      }
+    });
+    (document.querySelectorAll('.words__item') as unknown as HTMLDivElement[])
+      .forEach((w) => {
+        w.removeAttribute('color');
+        w.setAttribute('color', `${this.color}`);
+      });
+  }
+
+  async pagination(): Promise<void> {
+    let indexPage = 0;
     const pagination = document.querySelector('#pagination') as HTMLUListElement;
+    pagination.innerHTML = '';
     for (let i = 1; i <= 30; i += 1) {
       const li = document.createElement('li') as HTMLElement;
       li.innerText = String(i);
@@ -62,7 +87,7 @@ class Book {
     }
     const arrowLeft = document.querySelector('#arrowPrev') as HTMLButtonElement;
     const arrowRight = document.querySelector('#arrowNext') as HTMLButtonElement;
-    let indexPage = 0;
+
     const list = document.querySelectorAll('#pagination li') as unknown as HTMLLIElement[];
     const showPage = async (li: Element): Promise<void> => {
       const active = document.querySelector('#pagination li.activeList') as HTMLLIElement;
@@ -70,12 +95,16 @@ class Book {
         active.classList.remove('activeList');
       }
       li.classList.add('activeList');
-      const pageNum = +li.innerHTML;
-      const words = await BackendAPIController.getAllWords(pageNum, number) as unknown as IWord[];
+      const pageNum = (+li.innerHTML) - 1;
+      const words = await BackendAPIController
+        .getAllWords(pageNum, this.numberHard) as unknown as IWord[];
       this.bookItem(words);
+      this.backgroundWordsCard(this.numberHard);
     };
+    await showPage(list[0]);
+
     const disableBtn = () => {
-      if (indexPage >= 19) {
+      if (indexPage >= 29) {
         arrowRight.disabled = true;
         indexPage = 29;
       } else arrowRight.disabled = false;
@@ -84,29 +113,26 @@ class Book {
         indexPage = 0;
       } else arrowLeft.disabled = false;
     };
-    showPage(list[0]);
-    arrowRight.addEventListener('click', (): void => {
+    disableBtn();
+    arrowRight.onclick = (): void => {
       indexPage += 1;
       disableBtn();
       showPage(list[indexPage]);
-    });
-    arrowLeft.addEventListener('click', (): void => {
+    };
+    arrowLeft.onclick = (): void => {
       indexPage -= 1;
       disableBtn();
       showPage(list[indexPage]);
-    });
-    this.chooseWordDifficulty();
+    };
   }
 
   chooseWordDifficulty(): void {
     const hardWords = document.querySelectorAll('.hardest-words li') as unknown as HTMLLIElement[];
     hardWords.forEach((el) => {
       el.onclick = () => {
-        console.log(el.style.backgroundColor);
-        this.pagination(Number(el.innerHTML) - 1);
-        (document.querySelectorAll('.words__item') as unknown as HTMLDivElement[]).forEach((w) => {
-          w.style.background = `${el.style.backgroundColor}`;
-        });
+        this.numberHard = Number(el.innerHTML) - 1;
+        this.pagination();
+        this.color = el.getAttribute('color') as string;
       };
     });
   }

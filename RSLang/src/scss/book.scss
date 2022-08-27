@@ -9,7 +9,7 @@
         max-width: 320px;
         border-radius: 10px;
         padding: 10px;
-        box-shadow: 0 0 6px #1b1b1d;
+        box-shadow: 0 0 6px $colorText;
     }
     &__img {
         width: 100%;
@@ -19,17 +19,14 @@
 .pagination {
     display: flex;
     justify-content: center;
-    position: fixed;
-    bottom: 0;
-    background: $backgroundColor;
-    width: calc(100vw - 116px);
+    padding-top: 30px;
     z-index: 10;
     &__arrow {
         margin: 10px;
         width: 40px;
         height: 40px;
         border-radius: 10px;
-        box-shadow: 0 0 6px #1b1b1d;
+        box-shadow: 0 0 6px $colorText;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -54,46 +51,47 @@ audio {
     width: 40px;
     height: 40px;
     border-radius: 10px;
-    box-shadow: 0 0 6px #1b1b1d;
+    box-shadow: 0 0 6px $colorText;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 .hardest-words {
-    position: fixed;
-    z-index: 10;
+    display: flex;
+    justify-content: center;
+    padding-top: 90px;
     li {
         margin: 10px;
         width: 40px;
         height: 40px;
         border-radius: 10px;
-        box-shadow: 0 0 6px #1b1b1d;
+        box-shadow: 0 0 6px $colorText;
         cursor: pointer;
         display: flex;
         justify-content: center;
         align-items: center;
-        &:nth-child(1) {
-            background: blue;
-        }
-        &:nth-child(2) {
-            background: blueviolet;
-        }
-        &:nth-child(3) {
-            background: green;
-        }
-        &:nth-child(4) {
-            background: red;
-        }
-        &:nth-child(5) {
-            background: yellow;
-        }
-        &:nth-child(6) {
-            background: pink;
-        }
-        // &:nth-child(7) {
-
-        // }
     }
+}
+[color="pink"] {
+    background-color: #ffc0cb;
+}
+[color="blue"] {
+    background-color: #849cfa;
+}
+[color="turquoise"] {
+    background-color: #84faee;
+}
+[color="purple"] {
+    background-color: #e690f8;
+}
+[color="green"] {
+    background-color: #94fa84;
+}
+[color="yellow"] {
+    background-color: #faf284;
+}
+[color="hard"] {
+    background-color: #ff7171;
 }
 @media screen and (max-width: 670px) {
     .pagination {

@@ -57,7 +57,8 @@ class Menu {
       const workPages = document.querySelector('.work') as HTMLElement;
       workPages.innerHTML = this.book.sectionBook();
       this.book.bookItem(await BackendAPIController.getAllWords(0, 0) as unknown as IWord[]);
-      this.book.pagination(0);
+      this.book.pagination();
+      this.book.chooseWordDifficulty();
       if (window.innerWidth <= 670) {
         this.aside.classList.remove('burger-active');
       }

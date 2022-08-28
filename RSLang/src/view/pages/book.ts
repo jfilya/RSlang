@@ -64,9 +64,12 @@ class Book {
       </div>`;
     });
     array.forEach((el) => {
-      (document.querySelector(`.listen-${el.word}`) as HTMLButtonElement).onclick = () => {
-        this.listenWords(el.audio, el.audioMeaning, el.audioExample);
-      };
+      const btn = (document.querySelector(`.listen-${el.word}`) as HTMLButtonElement);
+      if (btn) {
+        btn.onclick = () => {
+          this.listenWords(el.audio, el.audioMeaning, el.audioExample);
+        };
+      }
     });
   }
 
@@ -107,7 +110,6 @@ class Book {
 
     const list = document.querySelectorAll('#pagination li') as unknown as HTMLLIElement[];
     const showPage = async (li: Element): Promise<void> => {
-      console.log(li, this.numberHard);
       const active = document.querySelector('#pagination li.activeList') as HTMLLIElement;
       if (active) {
         active.classList.remove('activeList');

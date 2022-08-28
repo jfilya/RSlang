@@ -1,11 +1,11 @@
 .login__popup__wrapper {
+    padding: 15px 0;
     position: fixed;
     top: 30%;
     right: -9999px;
     z-index: 5;
     background-color: azure;
     width: 300px;
-    height: 150px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -21,11 +21,16 @@
 }
 
 .register__popup__wrapper {
+    padding: 15px 0;
     position: fixed;
     top: 30%;
     right: -9999px;
     z-index: 5;
     background-color: azure;
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .login__popup__wrapper_active {
@@ -37,5 +42,49 @@
 }
 
 .register__popup__wrapper_active {
-    right: 50%;
+    right: calc(50vw - 150px);
+}
+
+.login__popup__btn {
+    padding: 5px;
+    border-radius: 5px;
+    background-color: #015288;
+    margin-top: 10px;
+    color: white;
+    width: 30%;
+    transition: 0.8s;
+    &:hover {
+        background-color: aquamarine;
+        transition: 0.8s;
+        color: black;
+    }
+}
+
+.register__error__text {
+    color: red;
+}
+
+.login__error__text {
+    color: red;
+}
+
+.login__close__btn {
+    position: absolute;
+    border: 2px solid #000;
+    border-radius: 20px;
+    top: -40px;
+    right: -40px;
+    z-index: 5;
+    height: 35px;
+    width: 35px;
+    background-color: azure;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: 0.8s;
+    cursor: pointer;
+    &:hover {
+        background-color: aquamarine;
+        transition: 0.8s;
+    }
 }

@@ -4,6 +4,7 @@ export default class Login {
   createLogin(): string {
     return `
     <div class="login__popup__wrapper">
+        <div class="login__close__btn">X</div>
         <div>
             <label class="login__popup__text" for="login-email">Email</label>
             <input class="login__popup__input" type="email" id="login-email" required>
@@ -13,10 +14,11 @@ export default class Login {
             <input class="login__popup__input" type="password" id="login-password" minlength="8" required>
         </div>
         <div class="login__error__text"></div>
-        <button class="login__btn">Login</button>
-        <button class="to__registry__btn">Register</button>
+        <button class="login__btn login__popup__btn">Login</button>
+        <button class="to__registry__btn login__popup__btn">Register</button>
     </div>
     <div class="register__popup__wrapper">
+        <div class="login__close__btn">X</div>
         <div>
             <label class="register__popup__text" for="register-email">Email</label>
             <input class="register__popup__input" type="email" id="register-email" required>
@@ -30,7 +32,7 @@ export default class Login {
             <input class="register__popup__input" type="password" id="register-password" minlength="8" required>
         </div>
         <div class="register__error__text"></div>
-        <button class="registry__btn">Register</button>
+        <button class="registry__btn login__popup__btn">Register</button>
     </div>
     <div class="login__background"></div>
     `;
@@ -47,6 +49,7 @@ export default class Login {
     const registerBtn = document.querySelector('.registry__btn');
     const loginBtn = document.querySelector('.login__btn');
     const loginErrorText = document.querySelector('.login__error__text') as HTMLElement;
+    const loginCloseBtn = document.querySelectorAll('.login__close__btn');
     loginBtn?.addEventListener('click', () => {
       const userEmail = document.getElementById('login-email') as HTMLInputElement;
       const userPassword = document.getElementById('login-password') as HTMLInputElement;
@@ -57,7 +60,7 @@ export default class Login {
           loginBg?.classList.remove('login__background_active');
         })
         .catch(() => {
-          loginErrorText!.innerHTML = 'Неправельный логин или пароль';
+          loginErrorText.innerHTML = 'Неправельный логин или пароль';
         });
     });
     headerLoginBtn?.addEventListener('click', () => {
@@ -80,13 +83,20 @@ export default class Login {
           registerWrapper?.classList.remove('register__popup__wrapper_active');
         })
         .catch(() => {
-          registerErrorText!.innerHTML = 'Ошибка';
+          registerErrorText.innerHTML = 'Ошибка';
         });
     });
-    loginBg?.addEventListener('click', () => {
-      registerWrapper?.classList.remove('register__popup__wrapper_active');
-      loginWrapper?.classList.remove('login__popup__wrapper_active');
-      loginBg?.classList.remove('login__background_active');
+    // loginBg?.addEventListener('click', () => {
+    //   registerWrapper?.classList.remove('register__popup__wrapper_active');
+    //   loginWrapper?.classList.remove('login__popup__wrapper_active');
+    //   loginBg?.classList.remove('login__background_active');
+    // });
+    [...loginCloseBtn].forEach((e) => {
+      e.addEventListener('click', () => {
+        registerWrapper?.classList.remove('register__popup__wrapper_active');
+        loginWrapper?.classList.remove('login__popup__wrapper_active');
+        loginBg?.classList.remove('login__background_active');
+      });
     });
   }
 }

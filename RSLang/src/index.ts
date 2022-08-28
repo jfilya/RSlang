@@ -11,3 +11,4 @@ page.root();
 const menu = new Menu();
 menu.buildPages();
 menu.active();
+menu.windowLocationLoad();

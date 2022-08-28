@@ -42,41 +42,64 @@ class Menu {
     const gameLink = document.querySelector('.game') as HTMLElement;
     const statisticLink = document.querySelector('.statistic') as HTMLElement;
     homeLink.onclick = () => {
+      window.location.href = `${window.location.pathname}`;
       this.home.startPage();
       if (window.innerWidth <= 670) {
         this.aside.classList.remove('burger-active');
       }
     };
     authorizationLink.onclick = () => {
+      window.location.href = `${window.location.pathname}`;
       console.log('authorization');
       if (window.innerWidth <= 670) {
         this.aside.classList.remove('burger-active');
       }
     };
     bookLink.onclick = async () => {
+      window.location.href = `${window.location.pathname}?/book`;
+      this.windowLocationLoad();
+    };
+    gameLink.onclick = () => {
+      window.location.href = `${window.location.pathname}?/game`;
+      this.windowLocationGame();
+    };
+    statisticLink.onclick = () => {
+      window.location.href = `${window.location.pathname}?/statistic`;
+      this.windowLocationStatistic();
+    };
+  }
+
+  windowLocationLoad(): void {
+    this.windowLocationBook();
+    this.windowLocationStatistic();
+    this.windowLocationGame();
+    if (window.innerWidth <= 670) {
+      this.aside.classList.remove('burger-active');
+    }
+  }
+
+  async windowLocationBook(): Promise<void> {
+    if (window.location.href.includes('book')) {
       const workPages = document.querySelector('.work') as HTMLElement;
       workPages.innerHTML = this.book.sectionBook();
       this.book.bookItem(await BackendAPIController.getAllWords(0, 0) as unknown as IWord[]);
       this.book.pagination();
       this.book.chooseWordDifficulty();
-      if (window.innerWidth <= 670) {
-        this.aside.classList.remove('burger-active');
-      }
-    };
-    gameLink.onclick = () => {
-      const workPages = document.querySelector('.work') as HTMLElement;
-      workPages.innerHTML = this.game.sectionGame();
-      if (window.innerWidth <= 670) {
-        this.aside.classList.remove('burger-active');
-      }
-    };
-    statisticLink.onclick = () => {
+    }
+  }
+
+  async windowLocationStatistic(): Promise<void> {
+    if (window.location.href.includes('statistic')) {
       const workPages = document.querySelector('.work') as HTMLElement;
       workPages.innerHTML = this.statistic.sectionStatistic();
-      if (window.innerWidth <= 670) {
-        this.aside.classList.remove('burger-active');
-      }
-    };
+    }
+  }
+
+  async windowLocationGame(): Promise<void> {
+    if (window.location.href.includes('game')) {
+      const workPages = document.querySelector('.work') as HTMLElement;
+      workPages.innerHTML = this.game.sectionGame();
+    }
   }
 }
 export default Menu;

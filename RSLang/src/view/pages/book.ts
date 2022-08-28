@@ -73,6 +73,9 @@ class Book {
   backgroundWordsCard(number: number): void {
     const hardWords = document.querySelectorAll('.hardest-words button') as unknown as HTMLLIElement[];
     hardWords.forEach((el, i) => {
+      if (localStorage.color) {
+        this.color = localStorage.color;
+      }
       if (i === number) {
         this.color = el.getAttribute('color') as string;
       }
@@ -85,7 +88,13 @@ class Book {
   }
 
   async pagination(): Promise<void> {
-    let indexPage = 0;
+    let indexPage: number;
+    if (localStorage.activeList) {
+      indexPage = localStorage.activeList - 1;
+    } else indexPage = 0;
+    if (localStorage.numberHard) {
+      this.numberHard = localStorage.numberHard;
+    }
     const pagination = document.querySelector('#pagination') as HTMLUListElement;
     pagination.innerHTML = '';
     for (let i = 1; i <= 30; i += 1) {
@@ -98,18 +107,20 @@ class Book {
 
     const list = document.querySelectorAll('#pagination li') as unknown as HTMLLIElement[];
     const showPage = async (li: Element): Promise<void> => {
+      console.log(li, this.numberHard);
       const active = document.querySelector('#pagination li.activeList') as HTMLLIElement;
       if (active) {
         active.classList.remove('activeList');
       }
       li.classList.add('activeList');
+      localStorage.setItem('activeList', li.innerHTML);
       const pageNum = (+li.innerHTML) - 1;
       const words = await BackendAPIController
         .getAllWords(pageNum, this.numberHard) as unknown as IWord[];
       this.bookItem(words);
       this.backgroundWordsCard(this.numberHard);
     };
-    await showPage(list[0]);
+    await showPage(list[indexPage]);
 
     const disableBtn = () => {
       if (indexPage >= 29) {
@@ -139,8 +150,10 @@ class Book {
     hardWords.forEach((el) => {
       el.onclick = () => {
         this.numberHard = Number(el.innerHTML) - 1;
+        localStorage.setItem('numberHard', String(this.numberHard));
         this.pagination();
         this.color = el.getAttribute('color') as string;
+        localStorage.setItem('color', this.color);
       };
     });
   }

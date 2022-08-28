@@ -3,8 +3,6 @@ import Book from '../pages/book';
 import Game from '../pages/game';
 import Home from '../pages/home';
 import Statistic from '../pages/statistic';
-import BackendAPIController from '../../controller/api/api';
-import { IWord } from '../../controller/api/interfaces';
 
 class Menu {
   aside: HTMLElement;
@@ -82,7 +80,6 @@ class Menu {
     if (window.location.href.includes('book')) {
       const workPages = document.querySelector('.work') as HTMLElement;
       workPages.innerHTML = this.book.sectionBook();
-      this.book.bookItem(await BackendAPIController.getAllWords(0, 0) as unknown as IWord[]);
       this.book.pagination();
       this.book.chooseWordDifficulty();
     }

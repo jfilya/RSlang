@@ -3,7 +3,7 @@ import BackendAPIController from '../../controller/api/api';
 export default class Login {
   createLogin(): string {
     return `
-    <div class="login__popup__wrapper">
+    <form class="login__popup__wrapper">
         <div class="login__close__btn">X</div>
         <div>
             <label class="login__popup__text" for="login-email">Email</label>
@@ -14,10 +14,10 @@ export default class Login {
             <input class="login__popup__input" type="password" id="login-password" minlength="8" required>
         </div>
         <div class="login__error__text"></div>
-        <button class="login__btn login__popup__btn">Login</button>
+        <button class="login__btn login__popup__btn" type="submit">Login</button>
         <button class="to__registry__btn login__popup__btn">Register</button>
-    </div>
-    <div class="register__popup__wrapper">
+    </form>
+    <form class="register__popup__wrapper">
         <div class="login__close__btn">X</div>
         <div>
             <label class="register__popup__text" for="register-email">Email</label>
@@ -32,8 +32,8 @@ export default class Login {
             <input class="register__popup__input" type="password" id="register-password" minlength="8" required>
         </div>
         <div class="register__error__text"></div>
-        <button class="registry__btn login__popup__btn">Register</button>
-    </div>
+        <button class="registry__btn login__popup__btn" type="submit">Register</button>
+    </form>
     <div class="login__background"></div>
     `;
   }

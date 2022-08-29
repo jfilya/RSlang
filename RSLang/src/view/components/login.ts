@@ -40,7 +40,9 @@ export default class Login {
 
   createLoginPopup(): void {
     const body = document.querySelector('.body') as HTMLBodyElement;
-    body.innerHTML += this.createLogin();
+    body.append(
+      ...new DOMParser().parseFromString(this.createLogin(), 'text/html').body.childNodes,
+    );
     const headerLoginBtn = document.querySelector('.header__register');
     const loginBg = document.querySelector('.login__background');
     const loginWrapper = document.querySelector('.login__popup__wrapper');
@@ -50,7 +52,8 @@ export default class Login {
     const loginBtn = document.querySelector('.login__btn');
     const loginErrorText = document.querySelector('.login__error__text') as HTMLElement;
     const loginCloseBtn = document.querySelectorAll('.login__close__btn');
-    loginBtn?.addEventListener('click', () => {
+    loginBtn?.addEventListener('click', (e) => {
+      e.preventDefault();
       const userEmail = document.getElementById('login-email') as HTMLInputElement;
       const userPassword = document.getElementById('login-password') as HTMLInputElement;
       BackendAPIController.signIn(userEmail.value, userPassword.value)
@@ -60,7 +63,7 @@ export default class Login {
           loginBg?.classList.remove('login__background_active');
         })
         .catch(() => {
-          loginErrorText.innerHTML = 'Неправельный логин или пароль';
+          loginErrorText.textContent = 'Неправельный логин или пароль';
         });
     });
     headerLoginBtn?.addEventListener('click', () => {
@@ -71,7 +74,8 @@ export default class Login {
       loginWrapper?.classList.remove('login__popup__wrapper_active');
       registerWrapper?.classList.add('register__popup__wrapper_active');
     });
-    registerBtn?.addEventListener('click', () => {
+    registerBtn?.addEventListener('click', (e) => {
+      e.preventDefault();
       const userEmail = document.getElementById('register-email') as HTMLInputElement;
       const userName = document.getElementById('register-name') as HTMLInputElement;
       const userPassword = document.getElementById('register-password') as HTMLInputElement;
@@ -83,14 +87,9 @@ export default class Login {
           registerWrapper?.classList.remove('register__popup__wrapper_active');
         })
         .catch(() => {
-          registerErrorText.innerHTML = 'Ошибка';
+          registerErrorText.textContent = 'Ошибка';
         });
     });
-    // loginBg?.addEventListener('click', () => {
-    //   registerWrapper?.classList.remove('register__popup__wrapper_active');
-    //   loginWrapper?.classList.remove('login__popup__wrapper_active');
-    //   loginBg?.classList.remove('login__background_active');
-    // });
     [...loginCloseBtn].forEach((e) => {
       e.addEventListener('click', () => {
         registerWrapper?.classList.remove('register__popup__wrapper_active');

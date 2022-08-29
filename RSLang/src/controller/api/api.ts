@@ -1,5 +1,5 @@
 import { ISingInResponse, IUser, IWord, IUserWords, IStatisticsResp, IUserSettings } from "./interfaces";
-import { tokenKey, getToken } from "../../utils/localStorageHelper";
+import { tokenKey, userID, getToken } from "../../utils/localStorageHelper";
 
 const BASE_URL  = 'https://rs-lang-project-for-rs-school.herokuapp.com';
 
@@ -15,8 +15,11 @@ export class BackendAPIController {
         },
         body: JSON.stringify({email, password})})).json();
         localStorage.setItem(tokenKey, resp.token);
+        localStorage.setItem(userID, resp.userId);
         return resp.userId;
     }
+
+    static userID = localStorage.getItem(userID);
 
     static async createUser(user : IUser): Promise<IUser> {
         const resp : IUser = await (await fetch(`${BASE_URL}/users`, {method: 'POST',
@@ -36,12 +39,12 @@ export class BackendAPIController {
         return await (await (fetch(`${BASE_URL}/words/${id}`))).json();
     }
 
-    static async getUserByID(id: string): Promise<IUser | null> {
+    static async getUserByID(): Promise<IUser | null> {
         let token = getToken();
         if (!token) {
             return null;
         }
-        return await (await (fetch(`${BASE_URL}/users/${id}`,
+        return await (await (fetch(`${BASE_URL}/users/${this.userID}`,
         {headers: {
             'Authorization': `Bearer ${token}`,
             'Accept': 'application/json',
@@ -49,12 +52,12 @@ export class BackendAPIController {
         }}))).json();
     }
 
-    static async updateUserByID(id: string, email: string, password: string): Promise<IUser | null> {
+    static async updateUserByID(email: string, password: string): Promise<IUser | null> {
         let token = getToken();
         if (!token) {
             return null;
         }
-        return await (await (fetch(`${BASE_URL}/users/${id}`,
+        return await (await (fetch(`${BASE_URL}/users/${this.userID}`,
         {method: 'PUT', headers: {
             'Authorization': `Bearer ${token}`,
             'Accept': 'application/json',
@@ -63,12 +66,12 @@ export class BackendAPIController {
     }
 
 
-    static async deleteUserByID(id: string): Promise<void | null> {
+    static async deleteUserByID(): Promise<void | null> {
         let token = getToken();
         if (!token) {
             return null;
         }
-        await (fetch(`${BASE_URL}/users/${id}`,
+        await (fetch(`${BASE_URL}/users/${this.userID}`,
         {method: 'DELETE', headers: {
             'Authorization': `Bearer ${token}`,
             'Accept': 'application/json',
@@ -76,12 +79,12 @@ export class BackendAPIController {
         }}));
     }
 
-    static async getNewToken(id: string): Promise<ISingInResponse | null> {
+    static async getNewToken(): Promise<ISingInResponse | null> {
         let token = getToken();
         if (!token) {
             return null;
         }
-        const newToken : ISingInResponse = await (await (fetch(`${BASE_URL}/users/${id}/tokens`, {headers: {
+        const newToken : ISingInResponse = await (await (fetch(`${BASE_URL}/users/${this.userID}/tokens`, {headers: {
             'Authorization': `Bearer ${token}`,
             'Accept': 'application/json',
             'Content-Type': 'application/json'
@@ -91,12 +94,12 @@ export class BackendAPIController {
         return newToken;
     }
 
-    static async createUserWord(id: string, wordId: string, difficulty: string, optional = {}): Promise<IUserWords | null> {
+    static async createUserWord(wordId: string, difficulty: string, optional = {}): Promise<IUserWords | null> {
         let token = getToken();
         if (!token) {
             return null;
         }
-        return await (await (fetch(`${BASE_URL}/users/${id}/words/${wordId}`,
+        return await (await (fetch(`${BASE_URL}/users/${this.userID}/words/${wordId}`,
         {method: 'POST', headers: {
             'Authorization': `Bearer ${token}`,
             'Accept': 'application/json',
@@ -104,12 +107,12 @@ export class BackendAPIController {
         }, body: JSON.stringify({difficulty, optional})}))).json();
     }
 
-    static async getAllUserWords(id: string): Promise<IUserWords[] | null> {
+    static async getAllUserWords(): Promise<IUserWords[] | null> {
         let token = getToken();
         if (!token) {
             return null;
         }
-        return await (await (fetch(`${BASE_URL}/users/${id}/words`,
+        return await (await (fetch(`${BASE_URL}/users/${this.userID}/words`,
         {headers: {
             'Authorization': `Bearer ${token}`,
             'Accept': 'application/json',
@@ -117,12 +120,12 @@ export class BackendAPIController {
         }}))).json();
     }
 
-    static async getSingleUserWord(id: string, wordId: string): Promise<IUserWords | null> {
+    static async getSingleUserWord(wordId: string): Promise<IUserWords | null> {
         let token = getToken();
         if (!token) {
             return null;
         }
-        return await (await (fetch(`${BASE_URL}/users/${id}/words/${wordId}`,
+        return await (await (fetch(`${BASE_URL}/users/${this.userID}/words/${wordId}`,
         {headers: {
             'Authorization': `Bearer ${token}`,
             'Accept': 'application/json',
@@ -131,12 +134,12 @@ export class BackendAPIController {
     }
 
     //другой айди для слова, отличающийся от метода POST
-    static async updateUserWord(id: string, wordId: string, difficulty: string, optional = {}): Promise<IUserWords | null> {
+    static async updateUserWord(wordId: string, difficulty: string, optional = {}): Promise<IUserWords | null> {
         let token = getToken();
         if (!token) {
             return null;
         }
-        return await (await (fetch(`${BASE_URL}/users/${id}/words/${wordId}`,
+        return await (await (fetch(`${BASE_URL}/users/${this.userID}/words/${wordId}`,
         {method: 'PUT', headers: {
             'Authorization': `Bearer ${token}`,
             'Accept': 'application/json',
@@ -144,12 +147,12 @@ export class BackendAPIController {
         }, body: JSON.stringify({difficulty, optional})}))).json();
     }
 
-    static async deleteUserWord(id: string, wordId: string): Promise<void | null> {
+    static async deleteUserWord(wordId: string): Promise<void | null> {
         let token = getToken();
         if (!token) {
             return null;
         }
-        await (fetch(`${BASE_URL}/users/${id}/words/${wordId}`,
+        await (fetch(`${BASE_URL}/users/${this.userID}/words/${wordId}`,
         {method: 'DELETE', headers: {
             'Authorization': `Bearer ${token}`,
             'Accept': 'application/json',
@@ -157,13 +160,13 @@ export class BackendAPIController {
         }}));
     }
 
-    static async getAllAggregatedWords(id: string, page: number, group: number, wordsPerPage: number, filter = {}): Promise<IWord[] | null> {
+    static async getAllAggregatedWords(page: number, group: number, wordsPerPage: number, filter = {}): Promise<IWord[] | null> {
         let token = getToken();
         if (!token) {
             return null;
         }
 
-        return await (await (fetch(`${BASE_URL}/users/${id}/aggregatedWords?${new URLSearchParams({
+        return await (await (fetch(`${BASE_URL}/users/${this.userID}/aggregatedWords?${new URLSearchParams({
             group: String(group || '0'),
             page: String(page || '0'),
             wordsPerPage: String(wordsPerPage || '20'),
@@ -178,13 +181,13 @@ export class BackendAPIController {
        }))).json();
     }
 
-    static async getAggregatedWordsById(id: string, wordId: string): Promise<IUserWords | null> {
+    static async getAggregatedWordsById(wordId: string): Promise<IUserWords | null> {
         let token = getToken();
         if (!token) {
             return null;
         }
 
-        return await (await (fetch(`${BASE_URL}/users/${id}/aggregatedWords/${wordId}`, {
+        return await (await (fetch(`${BASE_URL}/users/${this.userID}/aggregatedWords/${wordId}`, {
             headers: {
                 'Authorization': `Bearer ${token}`,
                 'Accept': 'application/json',
@@ -193,13 +196,13 @@ export class BackendAPIController {
         }))).json();
     }
 
-    static async getUserStatistics(id: string): Promise<IStatisticsResp | null> {
+    static async getUserStatistics(): Promise<IStatisticsResp | null> {
         let token = getToken();
         if (!token) {
             return null;
         }
 
-        return await (await (fetch(`${BASE_URL}/users/${id}/statistics`, {
+        return await (await (fetch(`${BASE_URL}/users/${this.userID}/statistics`, {
             headers: {
                 'Authorization': `Bearer ${token}`,
                 'Accept': 'application/json',
@@ -208,12 +211,12 @@ export class BackendAPIController {
         }))).json();
     }
 
-    static async updateUserStatistics(id: string, learnedWords: number, optional = {}): Promise<IStatisticsResp | null> {
+    static async updateUserStatistics(learnedWords: number, optional = {}): Promise<IStatisticsResp | null> {
         let token = getToken();
         if (!token) {
             return null;
         }
-        return await (await (fetch(`${BASE_URL}/users/${id}/statistics`,
+        return await (await (fetch(`${BASE_URL}/users/${this.userID}/statistics`,
         {method: 'PUT', headers: {
             'Authorization': `Bearer ${token}`,
             'Accept': 'application/json',
@@ -221,12 +224,12 @@ export class BackendAPIController {
         }, body: JSON.stringify({learnedWords, optional})}))).json();
     }
 
-    static async getUserSettings(id: string): Promise<IUserSettings | null> {
+    static async getUserSettings(): Promise<IUserSettings | null> {
         let token = getToken();
         if (!token) {
             return null;
         }
-        return await (await (fetch(`${BASE_URL}/users/${id}/settings`, {
+        return await (await (fetch(`${BASE_URL}/users/${this.userID}/settings`, {
             headers: {
                 'Authorization': `Bearer ${token}`,
                 'Accept': 'application/json',
@@ -235,12 +238,12 @@ export class BackendAPIController {
         }))).json();
     }
 
-    static async updateUserSettings(id: string, wordsPerDay: number, optional = {}): Promise<IUserSettings | null> {
+    static async updateUserSettings(wordsPerDay: number, optional = {}): Promise<IUserSettings | null> {
         let token = getToken();
         if (!token) {
             return null;
         }
-        return await (await (fetch(`${BASE_URL}/users/${id}/settings`,
+        return await (await (fetch(`${BASE_URL}/users/${this.userID}/settings`,
         {method: 'PUT', headers: {
             'Authorization': `Bearer ${token}`,
             'Accept': 'application/json',

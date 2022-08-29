@@ -1,5 +1,12 @@
-import { ISingInResponse, IUser, IWord, IUserWords, IStatisticsResp, IUserSettings } from "./interfaces";
-import { tokenKey, userID, getToken } from "../../utils/localStorageHelper";
+import { tokenKey, userID, getToken } from "../../utils/localStorageHelper" }
+import {
+  ISingInResponse,
+  IUser,
+  IWord,
+  IUserWords,
+  IStatisticsResp,
+  IUserSettings,
+} from './interfaces';
 
 const BASE_URL  = 'https://rs-lang-project-for-rs-school.herokuapp.com';
 

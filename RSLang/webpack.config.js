@@ -59,8 +59,8 @@ const baseConfig = {
 
 module.exports = ({ mode }) => {
   const isProductionMode = mode === 'prod';
-  // eslint-disable-next-line global-require
   const envConfig = isProductionMode ? require('./webpack.prod.config') : require('./webpack.dev.config');
 
   return merge(baseConfig, envConfig);
 };
+

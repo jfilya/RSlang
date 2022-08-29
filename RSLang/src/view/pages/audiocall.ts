@@ -1,5 +1,4 @@
-import { BASE_URL } from '../../controller/api/api';
-import BackendAPIController from '../../controller/api/api';
+import BackendAPIController, { BASE_URL } from '../../controller/api/api';
 import { IWord } from '../../controller/api/interfaces';
 import { IAudioCallGame, generateWordsForGame } from '../../utils/wordsGenerationForAudiocall';
 
@@ -19,26 +18,19 @@ const startGameConfig = {
   wordsForGame: [],
 };
 
-const urlAudioFile = BASE_URL + '/';
+const urlAudioFile = `${BASE_URL}/`;
 
 class Audiocall {
-  groups: number[] | string[];
+  groups: number[] | string[] = [0, 1, 2, 3, 4, 5];
 
-  id: string; // need to make separate method for getting userID in API
+  id: string = '630244fcbe44cf0016ddcae9'; // need to make separate method for getting userID in API
 
-  container: HTMLElement;
+  container: HTMLElement = null as unknown as HTMLElement;
 
-  gameConfig: IGameConfig;
-
-  constructor() {
-    this.groups = [0, 1, 2, 3, 4, 5];
-    this.id = '630244fcbe44cf0016ddcae9';
-    this.container = null as unknown as HTMLElement;
-    this.gameConfig = { ...startGameConfig };
-  }
+  gameConfig: IGameConfig = { ...startGameConfig };
 
   // working with data
-  async getDataSet(group: number) {
+  getDataSet(group: number) {
     return BackendAPIController.getAllAggregatedWords(
       this.id,
       Math.floor(Math.random() * 30),
@@ -47,7 +39,7 @@ class Audiocall {
     ).then((req) => req);
   }
 
-  async makeFakeWords(group: number | null) {
+  makeFakeWords(group: number | null) {
     let wrongGroup = 0;
     do {
       wrongGroup = Math.floor(Math.random() * 5);
@@ -58,7 +50,6 @@ class Audiocall {
     ).then((req) => req);
   }
 
-  // hearts (lives) for the game
   heartGenerate = (allHearts: number) => `
     <div class="hearts">
     ${Array(allHearts)
@@ -71,7 +62,6 @@ class Audiocall {
     document.querySelector(`[data-heart="${heart}"]`)?.classList.add('heart_fail');
   }
 
-  // buttons
   buttonGenerate(allButton: number) {
     return `<div class="answer-button__container">
       ${Array(allButton)
@@ -81,13 +71,13 @@ class Audiocall {
     </div>`;
   }
 
-  // audio
   playAudio() {
-    const audio = new Audio(urlAudioFile + this.gameConfig.wordsForGame[this.gameConfig.currentLevel].audioDescription);
+    const audio = new Audio(
+      urlAudioFile + this.gameConfig.wordsForGame[this.gameConfig.currentLevel].audioDescription,
+    );
     audio.play();
   }
 
-  // answers
   getAnswerControllers = () => [
     document.querySelector('.answer-button__container'),
     [...document.querySelectorAll('[data-answer]')],
@@ -119,8 +109,7 @@ class Audiocall {
     this.showGame();
   }
 
-  checkAnswer = (answer: string): boolean => 
-    answer === this.gameConfig.wordsForGame[this.gameConfig.currentLevel].translation;
+  checkAnswer = (answer: string): boolean => answer === this.gameConfig.wordsForGame[this.gameConfig.currentLevel].translation;
 
   packageAnswers(allAnswerButton: Element[]) {
     this.displayAnswers(
@@ -170,9 +159,7 @@ class Audiocall {
   endGame() {
     this.container.innerHTML = `
       <ul class="results">
-        ${this.gameConfig.wordsForGame.slice(0, this.gameConfig.currentLevel + 1).map(({rightOrWrong, translation}) =>
-          `<li class="results__elems">${translation} – ${rightOrWrong ? 'Угадано!' : 'Не угадали!'}</li>`
-        ).join('')}
+        ${this.gameConfig.wordsForGame.slice(0, this.gameConfig.currentLevel + 1).map(({ rightOrWrong, translation }) => `<li class="results__elems">${translation} – ${rightOrWrong ? 'Угадано!' : 'Не угадали!'}</li>`).join('')}
       </ul>
       <button class="reset_the_game">Попробовать снова</button>`;
     document.querySelector('.reset_the_game')?.addEventListener('click', () => {
@@ -203,7 +190,7 @@ class Audiocall {
     <p>Тренировка Аудиовызов развивает словарный запас. Вы должны выбрать перевод услышанного слова. Выберите сложность от 1 до 6:</p>
     <ul class="group_of_words">
       ${this.groups
-    .map((el) => `<li class="group_of_words__elem" data-value=${el}>${Number(el)+1}</li>`)
+    .map((el) => `<li class="group_of_words__elem" data-value=${el}>${Number(el) + 1}</li>`)
     .join('')}
     </ul>
     `;

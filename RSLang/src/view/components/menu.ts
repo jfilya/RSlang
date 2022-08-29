@@ -35,7 +35,6 @@ class Menu {
 
   buildPages(): void {
     const homeLink = document.querySelector('.home') as HTMLElement;
-    const authorizationLink = document.querySelector('.authorization') as HTMLElement;
     const bookLink = document.querySelector('.book') as HTMLElement;
     const gameLink = document.querySelector('.game') as HTMLElement;
     const statisticLink = document.querySelector('.statistic') as HTMLElement;
@@ -46,14 +45,7 @@ class Menu {
         this.aside.classList.remove('burger-active');
       }
     };
-    authorizationLink.onclick = () => {
-      window.location.href = `${window.location.pathname}`;
-      console.log('authorization');
-      if (window.innerWidth <= 670) {
-        this.aside.classList.remove('burger-active');
-      }
-    };
-    bookLink.onclick = async () => {
+    bookLink.onclick = () => {
       window.location.href = `${window.location.pathname}?/book`;
       this.windowLocationLoad();
     };
@@ -76,7 +68,7 @@ class Menu {
     }
   }
 
-  async windowLocationBook(): Promise<void> {
+  windowLocationBook(): void {
     if (window.location.href.includes('book')) {
       const workPages = document.querySelector('.work') as HTMLElement;
       workPages.innerHTML = this.book.sectionBook();
@@ -85,14 +77,14 @@ class Menu {
     }
   }
 
-  async windowLocationStatistic(): Promise<void> {
+  windowLocationStatistic(): void {
     if (window.location.href.includes('statistic')) {
       const workPages = document.querySelector('.work') as HTMLElement;
       workPages.innerHTML = this.statistic.sectionStatistic();
     }
   }
 
-  async windowLocationGame(): Promise<void> {
+  windowLocationGame(): void {
     if (window.location.href.includes('game')) {
       const workPages = document.querySelector('.work') as HTMLElement;
       workPages.innerHTML = this.game.sectionGame();

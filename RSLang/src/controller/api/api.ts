@@ -8,7 +8,7 @@ import {
 } from './interfaces';
 import { tokenKey, getToken } from '../../utils/localStorageHelper';
 
-const BASE_URL = 'https://rs-lang-project-for-rs-school.herokuapp.com';
+export const BASE_URL = 'https://rs-lang-project-for-rs-school.herokuapp.com';
 
 export default class BackendAPIController {
   static async signIn(email: string, password: string) {
@@ -242,7 +242,7 @@ export default class BackendAPIController {
         Accept: 'application/json',
         'Content-Type': 'application/json',
       },
-    }))).json();
+    }))).json().then((req) => req[0].paginatedResults);
   }
 
   static async getAggregatedWordsById(id: string, wordId: string): Promise<IUserWords | null> {

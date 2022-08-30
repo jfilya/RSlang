@@ -74,7 +74,7 @@ class Book {
   }
 
   backgroundWordsCard(number: number): void {
-    const hardWords = <HTMLButtonElement[]><unknown>document.querySelectorAll('.hardest-words button');
+    const hardWords = document.querySelectorAll('.hardest-words button') as unknown as HTMLButtonElement[];
     hardWords.forEach((el, i) => {
       if (localStorage.color) {
         this.color = localStorage.color;
@@ -148,7 +148,7 @@ class Book {
   }
 
   chooseWordDifficulty(): void {
-    const hardWords = <HTMLButtonElement[]><unknown>document.querySelectorAll('.hardest-words button');
+    const hardWords = document.querySelectorAll('.hardest-words button') as unknown as HTMLButtonElement[];
     hardWords.forEach((el) => {
       el.onclick = () => {
         this.numberHard = Number(el.innerHTML) - 1;
@@ -169,7 +169,7 @@ class Book {
     for (let i = 0; i < songs.length; i += 1) {
       const a = new Audio(songs[i]);
       audioElements.push(a);
-      (<HTMLButtonElement[]><unknown>document.querySelectorAll('button'))
+      (document.querySelectorAll('button') as unknown as HTMLButtonElement[])
         .forEach((b) => {
           b.disabled = true;
         });
@@ -184,7 +184,7 @@ class Book {
       }
       if (i === songs.length - 1) {
         audioElements[i].onended = () => {
-          (<HTMLButtonElement[]><unknown>document.querySelectorAll('button'))
+          (document.querySelectorAll('button') as unknown as HTMLButtonElement[])
             .forEach((b) => {
               b.disabled = false;
             });

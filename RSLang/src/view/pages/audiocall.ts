@@ -30,24 +30,24 @@ class Audiocall {
   gameConfig: IGameConfig = { ...startGameConfig };
 
   // working with data
-  getDataSet(group: number) {
-    return BackendAPIController.getAllAggregatedWords(
+  async getDataSet(group: number) {
+    const req = await BackendAPIController.getAllAggregatedWords(
       this.id,
       Math.floor(Math.random() * 30),
       group,
-      8,
-    ).then((req) => req);
+      8);
+    return req;
   }
 
-  makeFakeWords(group: number | null) {
+  async makeFakeWords(group: number | null) {
     let wrongGroup = 0;
     do {
       wrongGroup = Math.floor(Math.random() * 5);
     } while (wrongGroup === group);
-    return BackendAPIController.getAllWords(
+    const req = await BackendAPIController.getAllWords(
       Math.floor(Math.random() * 30),
-      wrongGroup,
-    ).then((req) => req);
+      wrongGroup);
+    return req;
   }
 
   heartGenerate = (allHearts: number) => `

@@ -1,4 +1,4 @@
-import BackendAPIController, { BASE_URL } from '../../controller/api/api';
+import { BackendAPIController, BASE_URL } from '../../controller/api/api';
 import { IWord } from '../../controller/api/interfaces';
 import { IAudioCallGame, generateWordsForGame } from '../../utils/wordsGenerationForAudiocall';
 
@@ -23,8 +23,6 @@ const urlAudioFile = `${BASE_URL}/`;
 class Audiocall {
   groups: number[] | string[] = [0, 1, 2, 3, 4, 5];
 
-  id: string = '630244fcbe44cf0016ddcae9'; // need to make separate method for getting userID in API
-
   container: HTMLElement = null as unknown as HTMLElement;
 
   gameConfig: IGameConfig = { ...startGameConfig };
@@ -32,10 +30,10 @@ class Audiocall {
   // working with data
   async getDataSet(group: number) {
     const req = await BackendAPIController.getAllAggregatedWords(
-      this.id,
       Math.floor(Math.random() * 30),
       group,
-      8);
+      8,
+    );
     return req;
   }
 
@@ -46,7 +44,8 @@ class Audiocall {
     } while (wrongGroup === group);
     const req = await BackendAPIController.getAllWords(
       Math.floor(Math.random() * 30),
-      wrongGroup);
+      wrongGroup,
+    );
     return req;
   }
 

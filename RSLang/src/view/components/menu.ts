@@ -35,28 +35,60 @@ class Menu {
 
   buildPages(): void {
     const homeLink = document.querySelector('.home') as HTMLElement;
-    const authorizationLink = document.querySelector('.authorization') as HTMLElement;
     const bookLink = document.querySelector('.book') as HTMLElement;
     const gameLink = document.querySelector('.game') as HTMLElement;
     const statisticLink = document.querySelector('.statistic') as HTMLElement;
     homeLink.onclick = () => {
+      window.location.href = `${window.location.pathname}`;
       this.home.startPage();
-    };
-    authorizationLink.onclick = () => {
-      console.log('authorization');
+      if (window.innerWidth <= 670) {
+        this.aside.classList.remove('burger-active');
+      }
     };
     bookLink.onclick = () => {
-      const workPages = document.querySelector('.work') as HTMLElement;
-      workPages.innerHTML = this.book.sectionBook();
+      window.location.href = `${window.location.pathname}?/book`;
+      this.windowLocationLoad();
     };
     gameLink.onclick = () => {
-      const workPages = document.querySelector('.work') as HTMLElement;
-      workPages.innerHTML = this.game.sectionGame();
+      window.location.href = `${window.location.pathname}?/game`;
+      this.windowLocationGame();
     };
     statisticLink.onclick = () => {
+      window.location.href = `${window.location.pathname}?/statistic`;
+      this.windowLocationStatistic();
+    };
+  }
+
+  windowLocationLoad(): void {
+    this.windowLocationBook();
+    this.windowLocationStatistic();
+    this.windowLocationGame();
+    if (window.innerWidth <= 670) {
+      this.aside.classList.remove('burger-active');
+    }
+  }
+
+  windowLocationBook(): void {
+    if (window.location.href.includes('book')) {
+      const workPages = document.querySelector('.work') as HTMLElement;
+      workPages.innerHTML = this.book.sectionBook();
+      this.book.pagination();
+      this.book.chooseWordDifficulty();
+    }
+  }
+
+  windowLocationStatistic(): void {
+    if (window.location.href.includes('statistic')) {
       const workPages = document.querySelector('.work') as HTMLElement;
       workPages.innerHTML = this.statistic.sectionStatistic();
-    };
+    }
+  }
+
+  windowLocationGame(): void {
+    if (window.location.href.includes('game')) {
+      const workPages = document.querySelector('.work') as HTMLElement;
+      workPages.innerHTML = this.game.sectionGame();
+    }
   }
 }
 export default Menu;

@@ -1,0 +1,246 @@
+[data-bird="1"]::before {
+  position: absolute;
+  left: 0;
+  top: 0;
+  content: '🦤';
+  filter: grayscale(1);
+}
+[data-bird="2"]::before {
+  position: absolute;
+  left: 0;
+  top: 0;
+  content: '🦚';
+  filter: grayscale(1);
+}
+[data-bird="3"]::before {
+  position: absolute;
+  left: 0;
+  top: 0;
+  content: '🦃';
+  filter: grayscale(1);
+}
+[data-bird="4"]::before {
+  position: absolute;
+  left: 0;
+  top: 0;
+  content: '🦅';
+  filter: grayscale(1);
+}
+
+.sprintgame__container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  margin: 3rem;
+
+  p {
+    text-align: center;
+  }
+}
+
+.sprintgame__card {
+  margin: 0.7rem;
+  display: flex;
+  flex-direction: column;
+  border-radius: 15px;
+  width: 400px;
+  height: 400px;
+  background-color: $highlightImportant;
+}
+
+.sprintgame__outerdata {
+  display: flex;
+  justify-content: space-between;
+  margin: 20px;
+}
+
+.sprintgame__innerdata {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+
+  .lamps {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    margin-bottom: 1.5rem;
+    gap: 50px;
+  }
+
+  .lamp {
+    width: 1rem;
+    height: 1rem;
+    position: relative;
+  
+    &::before {
+      position: absolute;
+      left: 0;
+      top: 0;
+      content: '💡';
+      filter: grayscale(1);
+    }
+    
+    &_on {
+      &::before {
+        filter: grayscale(0);
+        animation: lampon 1s;
+        transition: filter 1s;
+      }
+    }
+  }
+
+  .birds {
+    display: flex;
+    justify-content: space-around;
+    flex-direction: row;
+    align-items: flex-end;
+    gap: 10px;
+    width: 90%;
+    height: 80px;
+
+    .bird {
+      width: 2.5rem;
+      height: 2.5rem;
+      position: relative;
+    
+      &::before {
+        position: absolute;
+        opacity: 0;
+        transition: .53s opacity;
+        font-size: 2.5rem;
+        left: 0;
+        top: 0;
+      }
+      
+      &_appear {
+        &::before {
+          opacity: 1;
+          animation: lampon 1s;
+          transition: filter 2s;
+        }
+      }
+    }
+  }
+
+  .sprintgame__words {
+    justify-content: space-around;
+    gap: 25px;
+
+    ::first-letter {
+      text-transform: uppercase;
+    }
+
+    .sprintgame__translation {
+      margin-top: 1rem;
+    }
+  }
+
+  .sprintgame__controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 20%;
+    height: 75px;
+    width: 90%;
+    margin-top: 0.6rem;
+
+    .sprintgame__controls-btn {
+      background-color: rgb(47, 47, 185);
+      height: 50px;
+      padding: 5px;
+      width: 200px;
+      border-radius: 0.6rem;
+      text-transform: uppercase;
+      transition: background-color 0.5s;
+      color: white;
+      display: block;
+      margin: auto;
+      margin-top: 1.5rem;
+      
+      &:hover {
+        background-color: rgb(122, 117, 163);
+      }
+      
+      &:active {
+        background-color: rgb(9, 30, 90);
+      }
+    }
+
+    .audio-btn {
+      display: block;
+      background-color: white;
+      height: 50px;
+      width: 100px;
+      border-radius: 50%;
+
+      &:hover {
+        background-color: rgb(200, 215, 122);
+      }
+      
+      &:active {
+        background-color: rgb(227, 224, 64);
+      }
+    }
+  }
+}
+
+@keyframes lampon {
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+  
+  10% {
+    transform: rotate(40deg) scale(1.2);
+  }
+  
+  20% {
+    transform: rotate(-40deg) scale(0.8);
+  }
+  
+  40% {
+    transform: rotate(30deg) scale(1.3);
+  }
+  
+  60% {
+    transform: rotate(-20deg) scale(0.8);
+  }
+  
+  80% {
+    transform: rotate(10deg) scale(1.1);
+  }
+    
+  100% {
+    transform: rotate(0deg) scale(1);
+  }
+}
+
+.sprintgame__title {
+  font-size: 2rem;
+  font-style: italic;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.group_of_words {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 15px;
+  margin-top: 2rem;
+
+  &__elem {
+    width: 40px;
+    height: 40px;
+    background-color: $highlightImportant;
+    text-align: center;
+    padding-top: 5px;
+    border-radius: 50%;
+  }
+}
+
+.results__elems {
+  border-bottom: 1px solid black;
+}

@@ -20,9 +20,9 @@ class Game {
       document.querySelector('.audiocall__btn')?.addEventListener('click', () => {
         this.audiocall();
       });
-      document.querySelector('.sprintgame__btn')?.addEventListener('click', ()=>{
+      document.querySelector('.sprintgame__btn')?.addEventListener('click', () => {
         this.sprintgame();
-      })
+      });
     }, 0);
     return `
         <h3 class="games__title">Мини игры</h3>

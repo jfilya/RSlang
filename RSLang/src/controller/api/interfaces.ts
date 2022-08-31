@@ -43,4 +43,3 @@ export interface IUserSettings {
   wordsPerDay: number,
   optional: {}
 }
-

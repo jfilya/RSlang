@@ -80,14 +80,14 @@
       left: 0;
       top: 0;
       content: '💡';
-      filter: grayscale(1);
+      opacity: 0.5;
+      transition: opacity 0.2s;
     }
     
     &_on {
       &::before {
-        filter: grayscale(0);
-        animation: lampon 1s;
-        transition: filter 1s;
+        opacity: 1;
+        animation: lampon 0.2s;
       }
     }
   }
@@ -241,6 +241,23 @@
   }
 }
 
-.results__elems {
-  border-bottom: 1px solid black;
+.results {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  
+  h2 {
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+
+  .results__elems {
+    border-bottom: 1px solid black;
+  }
+
+  .results__elems::first-letter {
+    text-transform: uppercase;
+  }
 }
+

@@ -29,10 +29,9 @@ class Audiocall {
 
   // working with data
   async getDataSet(group: number) {
-    const req = await BackendAPIController.getAllAggregatedWords(
+    const req = await BackendAPIController.getAllWords(
       Math.floor(Math.random() * 30),
-      group,
-      8,
+      group
     );
     return req;
   }
@@ -158,6 +157,7 @@ class Audiocall {
   endGame() {
     this.container.innerHTML = `
       <ul class="results">
+      <h2>Результат</h2>
         ${this.gameConfig.wordsForGame.slice(0, this.gameConfig.currentLevel + 1).map(({ rightOrWrong, translation }) => `<li class="results__elems">${translation} – ${rightOrWrong ? 'Угадано!' : 'Не угадали!'}</li>`).join('')}
       </ul>
       <button class="reset_the_game">Попробовать снова</button>`;

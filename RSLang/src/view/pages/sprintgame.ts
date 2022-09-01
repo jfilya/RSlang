@@ -42,10 +42,9 @@ export default class SprintGame {
   gameConfig: IGameConfig = { ...startGameConfig };
 
   async getDataSet(group: number) {
-    const req = (await Promise.all(Array(6).fill(0).map(() => BackendAPIController.getAllAggregatedWords(
+    const req = (await Promise.all(Array(6).fill(0).map(() => BackendAPIController.getAllWords(
       Math.floor(Math.random() * 30),
-      group,
-      20,
+      group
     ))) as Array<Array<IWord>>).flat();
     return req;
   }
@@ -112,6 +111,7 @@ export default class SprintGame {
         !firstBird && this.birdDissappear(this.gameConfig.currentBirds);
         this.gameConfig.currentBirds -= firstBird ? 0 : 1;
       } else {
+        this.allLampsOff();
         this.gameConfig.currentLamps = 0;
       }
     }
@@ -131,6 +131,26 @@ export default class SprintGame {
     }, 1000);
   }
 
+  listenersForTheGame() {
+    document.querySelector('.audio-btn')?.addEventListener('click', () => {
+      this.playAudio();
+    });
+    document.querySelector('.prev-btn')?.addEventListener('click', () => {
+      this.rightOrWrongAnswer(false);
+    });
+    window.addEventListener('keydown', (e) => {
+      console.log('press', this.gameConfig);
+      if (e.key === 'ArrowLeft') {
+        this.rightOrWrongAnswer(false);
+      } else if (e.key === 'ArrowRight') {
+        this.rightOrWrongAnswer(true);
+      }
+    });
+    document.querySelector('.next-btn')?.addEventListener('click', () => {
+      this.rightOrWrongAnswer(true);
+    });
+  }
+
   showTheWord() {
     const word = this.gameConfig.wordsForGame[this.gameConfig.currentLevel];
     (document.querySelector('.sprintgame__original-word') as HTMLElement).textContent = word.word;
@@ -141,19 +161,22 @@ export default class SprintGame {
   endGame() {
     this.container.innerHTML = `
       <ul class="results">
+      <h2>Результат</h2>
         ${this.gameConfig.wordsForGame.slice(0, this.gameConfig.currentLevel + 1).map(({
     rightOrWrong, correctTranslate, word, transcription,
   }) => `<li class="results__elems">${word} – ${transcription} – ${correctTranslate} – ${rightOrWrong ? 'Угадано!' : 'Не угадали!'}</li>`).join('')}
       </ul>
       <button class="reset_the_game">Попробовать снова</button>`;
     document.querySelector('.reset_the_game')?.addEventListener('click', () => {
+      console.log('1 ', this.gameConfig);
       const wordForGame = this.gameConfig.wordsForGame.map((el) => ({ ...el, rightOrWrong: false }));
       this.gameConfig = { ...startGameConfig, wordsForGame: wordForGame };
-      this.showTheGame();
+      this.showTheGame(false);
     });
   }
 
-  showTheGame() {
+  showTheGame(firstTime: boolean) {
+    console.log('2 ',this.gameConfig);
     this.container.innerHTML = `
     <div class="sprintgame__card">
       <div class="sprintgame__outerdata">
@@ -177,31 +200,18 @@ export default class SprintGame {
       </div>
     </div>
     `;
+    if (firstTime) {
+      this.listenersForTheGame();
+    }
     this.showTheWord();
     this.timer();
     this.birdAppear(this.gameConfig.currentBirds);
-    document.querySelector('.audio-btn')?.addEventListener('click', () => {
-      this.playAudio();
-    });
-    document.querySelector('.prev-btn')?.addEventListener('click', () => {
-      this.rightOrWrongAnswer(false);
-    });
-    window.addEventListener('keydown', (e) => {
-      if (e.key === 'ArrowLeft') {
-        this.rightOrWrongAnswer(false);
-      } else if (e.key === 'ArrowRight') {
-        this.rightOrWrongAnswer(true);
-      }
-    });
-    document.querySelector('.next-btn')?.addEventListener('click', () => {
-      this.rightOrWrongAnswer(true);
-    });
   }
 
   startTheGame(words: IWord[]) {
     const wordsForTheGame = this.makeWordsForTheGame(words);
     this.gameConfig = { ...startGameConfig, wordsForGame: wordsForTheGame };
-    this.showTheGame();
+    this.showTheGame(true);
   }
 
   playAudio() {

@@ -100,6 +100,7 @@ class Book {
       if (cancellation) {
         cancellation.onclick = async () => {
           await this.deleteUserWords(el, 'hard');
+          await BackendAPIController.getAllUserWords();
           this.buildPageHard();
         };
       }

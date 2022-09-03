@@ -79,7 +79,7 @@
 }
 
 .reset_the_game {
-  background-color: lightyellow;
+  background-color: $highlightImportant;
   border-radius: 0.6rem;
   display: block;
   margin: auto;
@@ -128,13 +128,26 @@
 }
 
 .game__btn {
-  background-color: #ffc001;
+  background-color: $highlightImportant;
   margin-top: 0.8rem;
   border: 1px solid black;
   width: 200px;
   height: 50px;
   font-weight: 800;
   border-radius: 0.6rem;
+}
+
+.audiocall__game {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  margin: 3rem;
+
+  p {
+    text-align: center;
+  }
 }
 
 .audiocall__title {
@@ -154,7 +167,7 @@
   &__elem {
     width: 40px;
     height: 40px;
-    background-color: #ffc001;
+    background-color: $highlightImportant;
     text-align: center;
     padding-top: 5px;
     border-radius: 50%;
@@ -167,6 +180,11 @@
   flex-direction: column;
   justify-content: center;
   
+  h2 {
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+
   .results__elems {
     padding: 0.3rem;
   }

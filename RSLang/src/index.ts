@@ -1,10 +1,11 @@
 import './scss/global.scss';
 import Menu from './view/components/menu';
 import Page from './view/page';
-
-BackendAPIController.signIn('mail@mail.ru', 'aokadadadsljhgugvguuvuu')
-  .then(() => BackendAPIController.getAllWords(0, 0));
+// import { BackendAPIController } from './controller/api/api';
 import Login from './view/components/login';
+
+// BackendAPIController.signIn('mail@mail.ru', 'aokadadadsljhgugvguuvuu')
+//   .then(() => BackendAPIController.getAllWords(0, 0));
 
 const page = new Page();
 page.root();

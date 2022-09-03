@@ -1,5 +1,6 @@
-import BackendAPIController from '../../controller/api/api';
-import { IWord } from '../../controller/api/interfaces';
+import { BackendAPIController } from '../../controller/api/api';
+import { IUserWords, IWord } from '../../controller/api/interfaces';
+import checkAutorization from '../../utils/checkAutorization';
 
 class Book {
   color: string;
@@ -20,7 +21,7 @@ class Book {
       <button color="purple">4</button>
       <button color="green">5</button>
       <button color="yellow">6</button>
-      <button color="hard">7</button>
+      <button class="hard-word-register" color="hard">7</button>
     </div>
     <div class="pagination">
     <button class="pagination__arrow  disableBtn" id="arrowPrev">
@@ -61,6 +62,11 @@ class Book {
       <p>${el.textMeaningTranslate}</p>
       <p>${el.textExample}</p>
       <p>${el.textExampleTranslate}</p>
+      <div class="hidden-btn">
+        <div class="mark-difficult difficult-${el.word}">Cложное</div>
+        <div class="mark-cancellation cancellation-${el.word}">Отменить</div>
+        <div class="mark-studied studied-${el.word}">Изученное</div>
+      </div>
       </div>`;
     });
     array.forEach((el) => {
@@ -70,7 +76,20 @@ class Book {
           this.listenWords(el.audio, el.audioMeaning, el.audioExample);
         };
       }
+      const difficult = document.querySelector(`.difficult-${el.word}`) as HTMLDivElement;
+      if (difficult) {
+        difficult.onclick = async () => {
+          await this.addHardWords(el);
+        };
+      }
+      const cancellation = document.querySelector(`.cancellation-${el.word}`) as HTMLDivElement;
+      if (cancellation) {
+        cancellation.onclick = async () => {
+          await this.addStudiedWords(el);
+        };
+      }
     });
+    this.checkAutirisationBook();
   }
 
   backgroundWordsCard(number: number): void {
@@ -83,7 +102,7 @@ class Book {
         this.color = el.getAttribute('color') as string;
       }
     });
-    (<HTMLDivElement[]><unknown>document.querySelectorAll('.words__item'))
+    (document.querySelectorAll('.words__item') as unknown as HTMLDivElement[])
       .forEach((w) => {
         w.removeAttribute('color');
         w.setAttribute('color', `${this.color}`);
@@ -98,53 +117,74 @@ class Book {
     if (localStorage.numberHard) {
       this.numberHard = localStorage.numberHard;
     }
-    const pagination = document.querySelector('#pagination') as HTMLUListElement;
-    pagination.innerHTML = '';
-    for (let i = 1; i <= 30; i += 1) {
-      const li = document.createElement('li') as HTMLElement;
-      li.innerText = String(i);
-      pagination.append(li);
-    }
-    const arrowLeft = document.querySelector('#arrowPrev') as HTMLButtonElement;
-    const arrowRight = document.querySelector('#arrowNext') as HTMLButtonElement;
 
-    const list = document.querySelectorAll('#pagination li') as unknown as HTMLLIElement[];
-    const showPage = async (li: Element): Promise<void> => {
-      const active = document.querySelector('#pagination li.activeList') as HTMLLIElement;
-      if (active) {
-        active.classList.remove('activeList');
+    if (+this.numberHard < 6) {
+      (document.querySelector('.pagination') as HTMLDivElement).style.display = 'flex';
+      const pagination = document.querySelector('#pagination') as HTMLUListElement;
+      pagination.innerHTML = '';
+      for (let i = 1; i <= 30; i += 1) {
+        const li = document.createElement('li') as HTMLElement;
+        li.innerText = String(i);
+        pagination.append(li);
       }
-      li.classList.add('activeList');
-      localStorage.setItem('activeList', li.innerHTML);
-      const pageNum = (+li.innerHTML) - 1;
-      const words = await BackendAPIController
-        .getAllWords(pageNum, this.numberHard) as unknown as IWord[];
+      const arrowLeft = document.querySelector('#arrowPrev') as HTMLButtonElement;
+      const arrowRight = document.querySelector('#arrowNext') as HTMLButtonElement;
+
+      const list = document.querySelectorAll('#pagination li') as unknown as HTMLLIElement[];
+      const showPage = async (li: Element): Promise<void> => {
+        const active = document.querySelector('#pagination li.activeList') as HTMLLIElement;
+        if (active) {
+          active.classList.remove('activeList');
+        }
+        li.classList.add('activeList');
+        localStorage.setItem('activeList', li.innerHTML);
+        const pageNum = (+li.innerHTML) - 1;
+
+        const words = await BackendAPIController
+          .getAllWords(pageNum, this.numberHard) as unknown as IWord[];
+        this.bookItem(words);
+        this.backgroundWordsCard(this.numberHard);
+      };
+      await showPage(list[indexPage]);
+      const disableBtn = () => {
+        if (indexPage >= 29) {
+          arrowRight.disabled = true;
+          indexPage = 29;
+        } else arrowRight.disabled = false;
+        if (indexPage <= 0) {
+          arrowLeft.disabled = true;
+          indexPage = 0;
+        } else arrowLeft.disabled = false;
+      };
+      disableBtn();
+      arrowRight.onclick = (): void => {
+        indexPage += 1;
+        disableBtn();
+        showPage(list[indexPage]);
+      };
+      arrowLeft.onclick = (): void => {
+        indexPage -= 1;
+        disableBtn();
+        showPage(list[indexPage]);
+      };
+    } else if (+this.numberHard === 6) {
+      const pagination = document.querySelector('#pagination') as HTMLUListElement;
+      (document.querySelector('.pagination') as HTMLDivElement).style.display = 'none';
+      pagination.innerHTML = '';
+      const hardWordUser = await BackendAPIController
+        .getAllUserWords() as unknown as IUserWords[];
+      const words = hardWordUser.map((h) => h.optional) as unknown as IWord[];
       this.bookItem(words);
       this.backgroundWordsCard(this.numberHard);
-    };
-    await showPage(list[indexPage]);
-
-    const disableBtn = () => {
-      if (indexPage >= 29) {
-        arrowRight.disabled = true;
-        indexPage = 29;
-      } else arrowRight.disabled = false;
-      if (indexPage <= 0) {
-        arrowLeft.disabled = true;
-        indexPage = 0;
-      } else arrowLeft.disabled = false;
-    };
-    disableBtn();
-    arrowRight.onclick = (): void => {
-      indexPage += 1;
-      disableBtn();
-      showPage(list[indexPage]);
-    };
-    arrowLeft.onclick = (): void => {
-      indexPage -= 1;
-      disableBtn();
-      showPage(list[indexPage]);
-    };
+      const cancellation = document.querySelectorAll('.mark-cancellation') as unknown as HTMLDivElement[];
+      cancellation.forEach((d) => {
+        d.style.display = 'flex';
+      });
+      const difficult = document.querySelectorAll('.mark-difficult') as unknown as HTMLDivElement[];
+      difficult.forEach((d) => {
+        d.style.display = 'none';
+      });
+    }
   }
 
   chooseWordDifficulty(): void {
@@ -190,6 +230,46 @@ class Book {
             });
         };
       }
+    }
+  }
+
+  async checkAutirisationBook(): Promise<void> {
+    const flag = await checkAutorization();
+    if (flag) {
+      const markAsDifficult = document.querySelectorAll('.hidden-btn') as unknown as HTMLDivElement[];
+      markAsDifficult.forEach((el) => {
+        el.style.display = 'flex';
+      });
+      const words = document.querySelectorAll('.words__item') as unknown as HTMLDivElement[];
+      words.forEach((el) => {
+        el.style.paddingBottom = '60px';
+      });
+      const hardWordRegister = document.querySelector('.hard-word-register') as HTMLButtonElement;
+      hardWordRegister.style.display = 'flex';
+    }
+  }
+
+  async addHardWords(element: IWord): Promise<void> {
+    const hardWordUser = await BackendAPIController.getAllUserWords() as unknown as IUserWords[];
+    const verification = hardWordUser.filter((h) => h.difficulty === element.word);
+    if (verification.length === 0) {
+      await BackendAPIController.createUserWord(
+        element.id,
+        element.word,
+        element,
+      );
+    }
+  }
+
+  async addStudiedWords(element: IWord): Promise<void> {
+    const hardWordUser = await BackendAPIController.getAllUserWords() as unknown as IUserWords[];
+    const verification = hardWordUser.filter((h) => h.difficulty === element.word);
+    if (verification.length === 0) {
+      await BackendAPIController.createUserWord(
+        element.id,
+        element.word,
+        element,
+      );
     }
   }
 }

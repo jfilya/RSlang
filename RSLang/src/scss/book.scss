@@ -1,52 +1,28 @@
 @import './color.scss';
 .words {
-    padding: 100px 20px;
-    display: flex;
-    flex-wrap: wrap;
-    grid-row-gap: 10px;
-    justify-content: space-around;
-    &__item {
-        max-width: 320px;
-        border-radius: 10px;
-        padding: 10px;
-        box-shadow: 0 0 6px $colorText;
-    }
-    &__img {
-        width: 100%;
-        height: 200px;
-    }
+  padding: 100px 20px;
+  display: flex;
+  flex-wrap: wrap;
+  grid-row-gap: 10px;
+  justify-content: space-around;
+  &__item {
+    max-width: 320px;
+    border-radius: 10px;
+    padding: 10px;
+    box-shadow: 0 0 6px $colorText;
+    position: relative;
+  }
+  &__img {
+    width: 100%;
+    height: 200px;
+  }
 }
 .pagination {
-    display: flex;
-    justify-content: center;
-    padding-top: 30px;
-    z-index: 10;
-    &__arrow {
-        margin: 10px;
-        width: 40px;
-        height: 40px;
-        border-radius: 10px;
-        box-shadow: 0 0 6px $colorText;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        cursor: pointer;
-    }
-}
-#pagination {
-    display: flex;
-    justify-content: center;
-    li {
-        display: none;
-    }
-}
-#pagination li.activeList {
-    display: flex;
-}
-audio {
-    z-index: 1;
-}
-.amount-words {
+  display: flex;
+  justify-content: center;
+  padding-top: 30px;
+  z-index: 10;
+  &__arrow {
     margin: 10px;
     width: 40px;
     height: 40px;
@@ -55,56 +31,103 @@ audio {
     display: flex;
     justify-content: center;
     align-items: center;
+    cursor: pointer;
+  }
+}
+#pagination {
+  display: flex;
+  justify-content: center;
+  li {
+    display: none;
+  }
+}
+#pagination li.activeList {
+  display: flex;
+}
+audio {
+  z-index: 1;
+}
+.amount-words {
+  margin: 10px;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  box-shadow: 0 0 6px $colorText;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .hardest-words {
+  display: flex;
+  justify-content: center;
+  padding-top: 90px;
+  button {
+    margin: 10px;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    box-shadow: 0 0 6px $colorText;
+    cursor: pointer;
     display: flex;
     justify-content: center;
-    padding-top: 90px;
-    button {
-        margin: 10px;
-        width: 40px;
-        height: 40px;
-        border-radius: 10px;
-        box-shadow: 0 0 6px $colorText;
-        cursor: pointer;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
+    align-items: center;
+  }
 }
-[color="pink"] {
-    background-color: #ffc0cb;
+[color='pink'] {
+  background-color: #ffc0cb;
 }
-[color="blue"] {
-    background-color: #849cfa;
+[color='blue'] {
+  background-color: #849cfa;
 }
-[color="turquoise"] {
-    background-color: #84faee;
+[color='turquoise'] {
+  background-color: #84faee;
 }
-[color="purple"] {
-    background-color: #e690f8;
+[color='purple'] {
+  background-color: #e690f8;
 }
-[color="green"] {
-    background-color: #94fa84;
+[color='green'] {
+  background-color: #94fa84;
 }
-[color="yellow"] {
-    background-color: #faf284;
+[color='yellow'] {
+  background-color: #faf284;
 }
-[color="hard"] {
-    background-color: #ff7171;
+[color='hard'] {
+  background-color: #ff7171;
 }
+button.hard-word-register {
+  display: none;
+}
+
 @media screen and (max-width: 670px) {
-    .pagination {
-        width: 100%;
-    }
+  .pagination {
+    width: 100%;
+  }
 }
 @media screen and (max-width: 420px) {
-    audio {
-        width: 90%;
+  audio {
+    width: 90%;
+  }
+  .words {
+    &__item {
+      max-width: 100%;
     }
-    .words {
-        &__item {
-            max-width: 100%;
-        }
-    }
+  }
+}
+.hidden-btn {
+  display: none;
+  position: absolute;
+  bottom: 10px;
+  width: calc(100% - 20px);
+  justify-content: space-between;
+  align-items: center;
+}
+.mark-difficult,
+.mark-studied,
+.mark-cancellation {
+  border: 1px solid black;
+  bottom: 10px;
+  padding: 5px;
+}
+.mark-cancellation{
+    display: none;
 }

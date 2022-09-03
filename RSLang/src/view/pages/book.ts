@@ -1,4 +1,4 @@
-import BackendAPIController from '../../controller/api/api';
+import { BackendAPIController } from '../../controller/api/api';
 import { IWord } from '../../controller/api/interfaces';
 
 class Book {

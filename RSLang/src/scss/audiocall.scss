@@ -123,8 +123,9 @@
 
 .games {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   gap: 35px;
+  margin-bottom: 8rem;
 }
 
 .game__btn {

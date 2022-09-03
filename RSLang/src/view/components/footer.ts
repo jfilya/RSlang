@@ -1,5 +1,18 @@
 class Footer {
   footer(): string {
+    setTimeout(() => {
+      const footer = document.querySelector('.footer');
+      const pathName = window.location;
+      document.querySelector('.work')?.addEventListener('DOMSubtreeModified', () => {
+        if (pathName.href.includes('game')) {
+          footer?.setAttribute('hidden', 'hidden');
+        } else {
+          footer?.removeAttribute('hidden');
+        }
+      }); 
+    }, 0);
+    
+
     return `
             <footer class="footer">
             <div class="footer__container">

@@ -49,7 +49,7 @@ class Book {
     array.forEach((el) => {
       words.innerHTML += `<div class="words__item">
       <img class="words__img" src="https://rs-lang-project-for-rs-school.herokuapp.com/${el.image}" alt="img-${el.word}">
-      <h3>${el.word}</h3>
+      <h3 class="word-name">${el.word}</h3>
       <p>${el.wordTranslate}</p>
       <p>${el.transcription}</p>
       <button class="listen-${el.word}"><svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -69,6 +69,11 @@ class Book {
       </div>
       </div>`;
     });
+    this.btnClick(array);
+    this.checkAutirisationBook();
+  }
+
+  btnClick(array: IWord[]): void {
     array.forEach((el) => {
       const btn = (document.querySelector(`.listen-${el.word}`) as HTMLButtonElement);
       if (btn) {
@@ -80,16 +85,25 @@ class Book {
       if (difficult) {
         difficult.onclick = async () => {
           await this.addHardWords(el);
+          const hardWordUser = await BackendAPIController
+            .getAllUserWords() as unknown as IUserWords[];
+          hardWordUser.forEach((h) => {
+            (document.querySelectorAll('.word-name') as unknown as HTMLHeadElement[]).forEach((w) => {
+              if (h.optional.word === w.innerHTML) {
+                ((w as HTMLHeadElement).parentNode as HTMLDivElement).setAttribute('color', 'hard');
+              }
+            });
+          });
         };
       }
       const cancellation = document.querySelector(`.cancellation-${el.word}`) as HTMLDivElement;
       if (cancellation) {
         cancellation.onclick = async () => {
-          await this.addStudiedWords(el);
+          await this.deleteUserWords(el, 'hard');
+          this.buildPageHard();
         };
       }
     });
-    this.checkAutirisationBook();
   }
 
   backgroundWordsCard(number: number): void {
@@ -109,6 +123,87 @@ class Book {
       });
   }
 
+  async buildPageOrdinary(indexPage: number): Promise<void> {
+    (document.querySelector('.pagination') as HTMLDivElement).style.display = 'flex';
+    const pagination = document.querySelector('#pagination') as HTMLUListElement;
+    pagination.innerHTML = '';
+    for (let i = 1; i <= 30; i += 1) {
+      const li = document.createElement('li') as HTMLElement;
+      li.innerText = String(i);
+      pagination.append(li);
+    }
+    const arrowLeft = document.querySelector('#arrowPrev') as HTMLButtonElement;
+    const arrowRight = document.querySelector('#arrowNext') as HTMLButtonElement;
+
+    const list = document.querySelectorAll('#pagination li') as unknown as HTMLLIElement[];
+    const showPage = async (li: Element): Promise<void> => {
+      const active = document.querySelector('#pagination li.activeList') as HTMLLIElement;
+      if (active) {
+        active.classList.remove('activeList');
+      }
+      li.classList.add('activeList');
+      localStorage.setItem('activeList', li.innerHTML);
+      const pageNum = (+li.innerHTML) - 1;
+
+      const words = await BackendAPIController
+        .getAllWords(pageNum, this.numberHard) as unknown as IWord[];
+      this.bookItem(words);
+      this.backgroundWordsCard(this.numberHard);
+      const hardWordUser = await BackendAPIController.getAllUserWords() as unknown as IUserWords[];
+      hardWordUser.forEach((h) => {
+        (document.querySelectorAll('.word-name') as unknown as HTMLHeadElement[]).forEach((w) => {
+          if (h.optional.word === w.innerHTML) {
+            ((w as HTMLHeadElement).parentNode as HTMLDivElement).setAttribute('color', 'hard');
+          }
+        });
+      });
+    };
+    await showPage(list[indexPage]);
+    const disableBtn = () => {
+      if (indexPage >= 29) {
+        arrowRight.disabled = true;
+        indexPage = 29;
+      } else arrowRight.disabled = false;
+      if (indexPage <= 0) {
+        arrowLeft.disabled = true;
+        indexPage = 0;
+      } else arrowLeft.disabled = false;
+    };
+    disableBtn();
+    arrowRight.onclick = (): void => {
+      indexPage += 1;
+      disableBtn();
+      showPage(list[indexPage]);
+    };
+    arrowLeft.onclick = (): void => {
+      indexPage -= 1;
+      disableBtn();
+      showPage(list[indexPage]);
+    };
+  }
+
+  async buildPageHard(): Promise<void> {
+    const pagination = document.querySelector('#pagination') as HTMLUListElement;
+    (document.querySelector('.pagination') as HTMLDivElement).style.display = 'none';
+    pagination.innerHTML = '';
+    const hardWordUser = await BackendAPIController
+      .getAllUserWords() as unknown as IUserWords[];
+    const words = [] as IWord[];
+    hardWordUser.forEach((h) => {
+      if (h.difficulty === 'hard') { words.push(h.optional); }
+    }) as unknown as IWord[];
+    this.bookItem(words);
+    this.backgroundWordsCard(this.numberHard);
+    const cancellation = document.querySelectorAll('.mark-cancellation') as unknown as HTMLDivElement[];
+    cancellation.forEach((d) => {
+      d.style.display = 'flex';
+    });
+    const difficult = document.querySelectorAll('.mark-difficult') as unknown as HTMLDivElement[];
+    difficult.forEach((d) => {
+      d.style.display = 'none';
+    });
+  }
+
   async pagination(): Promise<void> {
     let indexPage: number;
     if (localStorage.activeList) {
@@ -117,73 +212,10 @@ class Book {
     if (localStorage.numberHard) {
       this.numberHard = localStorage.numberHard;
     }
-
     if (+this.numberHard < 6) {
-      (document.querySelector('.pagination') as HTMLDivElement).style.display = 'flex';
-      const pagination = document.querySelector('#pagination') as HTMLUListElement;
-      pagination.innerHTML = '';
-      for (let i = 1; i <= 30; i += 1) {
-        const li = document.createElement('li') as HTMLElement;
-        li.innerText = String(i);
-        pagination.append(li);
-      }
-      const arrowLeft = document.querySelector('#arrowPrev') as HTMLButtonElement;
-      const arrowRight = document.querySelector('#arrowNext') as HTMLButtonElement;
-
-      const list = document.querySelectorAll('#pagination li') as unknown as HTMLLIElement[];
-      const showPage = async (li: Element): Promise<void> => {
-        const active = document.querySelector('#pagination li.activeList') as HTMLLIElement;
-        if (active) {
-          active.classList.remove('activeList');
-        }
-        li.classList.add('activeList');
-        localStorage.setItem('activeList', li.innerHTML);
-        const pageNum = (+li.innerHTML) - 1;
-
-        const words = await BackendAPIController
-          .getAllWords(pageNum, this.numberHard) as unknown as IWord[];
-        this.bookItem(words);
-        this.backgroundWordsCard(this.numberHard);
-      };
-      await showPage(list[indexPage]);
-      const disableBtn = () => {
-        if (indexPage >= 29) {
-          arrowRight.disabled = true;
-          indexPage = 29;
-        } else arrowRight.disabled = false;
-        if (indexPage <= 0) {
-          arrowLeft.disabled = true;
-          indexPage = 0;
-        } else arrowLeft.disabled = false;
-      };
-      disableBtn();
-      arrowRight.onclick = (): void => {
-        indexPage += 1;
-        disableBtn();
-        showPage(list[indexPage]);
-      };
-      arrowLeft.onclick = (): void => {
-        indexPage -= 1;
-        disableBtn();
-        showPage(list[indexPage]);
-      };
+      this.buildPageOrdinary(indexPage);
     } else if (+this.numberHard === 6) {
-      const pagination = document.querySelector('#pagination') as HTMLUListElement;
-      (document.querySelector('.pagination') as HTMLDivElement).style.display = 'none';
-      pagination.innerHTML = '';
-      const hardWordUser = await BackendAPIController
-        .getAllUserWords() as unknown as IUserWords[];
-      const words = hardWordUser.map((h) => h.optional) as unknown as IWord[];
-      this.bookItem(words);
-      this.backgroundWordsCard(this.numberHard);
-      const cancellation = document.querySelectorAll('.mark-cancellation') as unknown as HTMLDivElement[];
-      cancellation.forEach((d) => {
-        d.style.display = 'flex';
-      });
-      const difficult = document.querySelectorAll('.mark-difficult') as unknown as HTMLDivElement[];
-      difficult.forEach((d) => {
-        d.style.display = 'none';
-      });
+      this.buildPageHard();
     }
   }
 
@@ -251,11 +283,11 @@ class Book {
 
   async addHardWords(element: IWord): Promise<void> {
     const hardWordUser = await BackendAPIController.getAllUserWords() as unknown as IUserWords[];
-    const verification = hardWordUser.filter((h) => h.difficulty === element.word);
+    const verification = hardWordUser.filter((h) => h.difficulty === 'hard' && h.optional.word === element.word);
     if (verification.length === 0) {
       await BackendAPIController.createUserWord(
         element.id,
-        element.word,
+        'hard',
         element,
       );
     }
@@ -263,14 +295,21 @@ class Book {
 
   async addStudiedWords(element: IWord): Promise<void> {
     const hardWordUser = await BackendAPIController.getAllUserWords() as unknown as IUserWords[];
-    const verification = hardWordUser.filter((h) => h.difficulty === element.word);
+    const verification = hardWordUser.filter((h) => h.difficulty === 'study' && h.optional.word === element.word);
     if (verification.length === 0) {
       await BackendAPIController.createUserWord(
         element.id,
-        element.word,
+        'study',
         element,
       );
     }
+  }
+
+  async deleteUserWords(element: IWord, difficulty: string): Promise<void> {
+    const wordUser = await BackendAPIController.getAllUserWords() as unknown as IUserWords[];
+    wordUser.forEach(async (w) => {
+      if (w.difficulty === difficulty) { await BackendAPIController.deleteUserWord(element.id); }
+    });
   }
 }
 export default Book;

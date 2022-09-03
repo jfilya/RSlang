@@ -139,7 +139,6 @@ export default class SprintGame {
       this.rightOrWrongAnswer(false);
     });
     window.addEventListener('keydown', (e) => {
-      console.log('press', this.gameConfig);
       if (e.key === 'ArrowLeft') {
         this.rightOrWrongAnswer(false);
       } else if (e.key === 'ArrowRight') {
@@ -168,7 +167,6 @@ export default class SprintGame {
       </ul>
       <button class="reset_the_game">Попробовать снова</button>`;
     document.querySelector('.reset_the_game')?.addEventListener('click', () => {
-      console.log('1 ', this.gameConfig);
       const wordForGame = this.gameConfig.wordsForGame.map((el) => ({ ...el, rightOrWrong: false }));
       this.gameConfig = { ...startGameConfig, wordsForGame: wordForGame };
       this.showTheGame(false);
@@ -176,7 +174,6 @@ export default class SprintGame {
   }
 
   showTheGame(firstTime: boolean) {
-    console.log('2 ',this.gameConfig);
     this.container.innerHTML = `
     <div class="sprintgame__card">
       <div class="sprintgame__outerdata">

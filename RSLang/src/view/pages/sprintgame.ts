@@ -1,25 +1,5 @@
 import { BackendAPIController, BASE_URL } from '../../controller/api/api';
-import { IWord } from '../../controller/api/interfaces';
-
-export interface ISprintWord {
-  audio: string,
-  word: string,
-  transcription: string,
-  currentTranslate: string,
-  correctTranslate: string,
-  rightOrWrong: boolean
-}
-
-interface IGameConfig {
-  points: number;
-  currentLamps: number;
-  allLamps: number;
-  currentBirds: number;
-  allBirds: number;
-  currentTime: number;
-  currentLevel: number,
-  wordsForGame: ISprintWord[];
-}
+import { IWord, ISprintWord, IGameConfig } from '../../controller/api/interfaces';
 
 const startGameConfig = {
   points: 0,
@@ -41,10 +21,10 @@ export default class SprintGame {
 
   gameConfig: IGameConfig = { ...startGameConfig };
 
-  async getDataSet(group: number) {
+  async getDataSet(group: number): Promise<IWord[]> {
     const req = (await Promise.all(Array(6).fill(0).map(() => BackendAPIController.getAllWords(
       Math.floor(Math.random() * 30),
-      group
+      group,
     ))) as Array<Array<IWord>>).flat();
     return req;
   }
@@ -58,7 +38,7 @@ export default class SprintGame {
     }));
   }
 
-  lampsGenerate = (allLamps: number) => `
+  lampsGenerate = (allLamps: number): string => `
   <div class="lamps">
   ${Array(allLamps)
     .fill(0)
@@ -66,15 +46,15 @@ export default class SprintGame {
     .join(' ')}
   </div>`;
 
-  lampOn(lamp: number) {
+  lampOn(lamp: number): void {
     document.querySelector(`[data-lamp="${lamp}"]`)?.classList.add('lamp_on');
   }
 
-  allLampsOff() {
+  allLampsOff(): void {
     document.querySelectorAll('[data-lamp]').forEach((el) => el.classList.remove('lamp_on'));
   }
 
-  birdsGenerate = (allBirds: number) => `
+  birdsGenerate = (allBirds: number): string => `
   <div class="birds">
   ${Array(allBirds)
     .fill(0)
@@ -82,23 +62,33 @@ export default class SprintGame {
     .join(' ')}
   </div>`;
 
-  birdAppear(bird: number) {
+  birdAppear(bird: number): void {
     document.querySelector(`[data-bird="${bird}"]`)?.classList.add('bird_appear');
   }
 
-  birdDissappear(bird: number) {
+  birdDissappear(bird: number): void {
     document.querySelector(`[data-bird="${bird}"]`)?.classList.remove('bird_appear');
   }
 
-  rightOrWrongAnswer(answer: boolean) {
+  private allLampsAreOn() {
+    this.gameConfig.currentLamps = 0;
+    this.allLampsOff();
+    this.gameConfig.currentBirds += this.gameConfig.currentBirds < this.gameConfig.allBirds ? 1 : 0;
+    this.birdAppear(this.gameConfig.currentBirds);
+  }
+
+  private allLampsAreOff() {
+    const firstBird = this.gameConfig.currentBirds === 1;
+    !firstBird && this.birdDissappear(this.gameConfig.currentBirds);
+    this.gameConfig.currentBirds -= firstBird ? 0 : 1;
+  }
+
+  rightOrWrongAnswer(answer: boolean): void {
     const currentTranslation = this.gameConfig.wordsForGame[this.gameConfig.currentLevel];
     if ((currentTranslation.correctTranslate === currentTranslation.currentTranslate) === answer) {
       currentTranslation.rightOrWrong = true;
       if (this.gameConfig.currentLamps === this.gameConfig.allLamps) {
-        this.gameConfig.currentLamps = 0;
-        this.allLampsOff();
-        this.gameConfig.currentBirds += this.gameConfig.currentBirds < this.gameConfig.allBirds ? 1 : 0;
-        this.birdAppear(this.gameConfig.currentBirds);
+        this.allLampsAreOn();
       } else {
         this.gameConfig.currentLamps += 1;
         this.lampOn(this.gameConfig.currentLamps);
@@ -107,9 +97,7 @@ export default class SprintGame {
     } else {
       currentTranslation.rightOrWrong = false;
       if (this.gameConfig.currentLamps === 0) {
-        const firstBird = this.gameConfig.currentBirds === 1;
-        !firstBird && this.birdDissappear(this.gameConfig.currentBirds);
-        this.gameConfig.currentBirds -= firstBird ? 0 : 1;
+        this.allLampsAreOff();
       } else {
         this.allLampsOff();
         this.gameConfig.currentLamps = 0;
@@ -119,7 +107,7 @@ export default class SprintGame {
     this.showTheWord();
   }
 
-  timer() {
+  timer(): void {
     const showTime = document.querySelector('.sprintgame__time') as HTMLElement;
     const time = setInterval(() => {
       this.gameConfig.currentTime -= 1;
@@ -131,7 +119,7 @@ export default class SprintGame {
     }, 1000);
   }
 
-  listenersForTheGame() {
+  listenersForTheGame(): void {
     document.querySelector('.audio-btn')?.addEventListener('click', () => {
       this.playAudio();
     });
@@ -150,14 +138,14 @@ export default class SprintGame {
     });
   }
 
-  showTheWord() {
+  showTheWord(): void {
     const word = this.gameConfig.wordsForGame[this.gameConfig.currentLevel];
     (document.querySelector('.sprintgame__original-word') as HTMLElement).textContent = word.word;
     (document.querySelector('.sprintgame__translation') as HTMLElement).textContent = word.currentTranslate;
     (document.querySelector('.sprintgame__points') as HTMLElement).textContent = String(this.gameConfig.points);
   }
 
-  endGame() {
+  endGame(): void {
     this.container.innerHTML = `
       <ul class="results">
       <h2>Результат</h2>
@@ -173,7 +161,7 @@ export default class SprintGame {
     });
   }
 
-  showTheGame(firstTime: boolean) {
+  showTheGame(firstTime: boolean): void {
     this.container.innerHTML = `
     <div class="sprintgame__card">
       <div class="sprintgame__outerdata">
@@ -205,20 +193,20 @@ export default class SprintGame {
     this.birdAppear(this.gameConfig.currentBirds);
   }
 
-  startTheGame(words: IWord[]) {
+  startTheGame(words: IWord[]): void {
     const wordsForTheGame = this.makeWordsForTheGame(words);
     this.gameConfig = { ...startGameConfig, wordsForGame: wordsForTheGame };
     this.showTheGame(true);
   }
 
-  playAudio() {
+  playAudio(): void {
     const audio = new Audio(
       url + this.gameConfig.wordsForGame[this.gameConfig.currentLevel].audio,
     );
     audio.play();
   }
 
-  initGame() {
+  initGame(): string {
     setTimeout(() => {
       document.querySelector('.group_of_words')?.addEventListener('click', async (event) => {
         const group = Number((event.target as HTMLElement).dataset.value);
@@ -240,7 +228,7 @@ export default class SprintGame {
     `;
   }
 
-  render(startTheGame: IWord[] | null) {
+  render(startTheGame: IWord[] | null): string {
     setTimeout(() => {
       this.container = document.querySelector('.sprintgame__container') as HTMLElement;
     }, 0);

@@ -43,3 +43,23 @@ export interface IUserSettings {
   wordsPerDay: number,
   optional: {}
 }
+
+export interface ISprintWord {
+  audio: string,
+  word: string,
+  transcription: string,
+  currentTranslate: string,
+  correctTranslate: string,
+  rightOrWrong: boolean
+}
+
+export interface IGameConfig {
+  points: number;
+  currentLamps: number;
+  allLamps: number;
+  currentBirds: number;
+  allBirds: number;
+  currentTime: number;
+  currentLevel: number,
+  wordsForGame: ISprintWord[];
+}

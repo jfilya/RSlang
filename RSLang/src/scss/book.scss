@@ -94,6 +94,9 @@ audio {
 [color='hard'] {
   background-color: #ff7171;
 }
+[color='study'] {
+    background-color: transparent;
+  }
 button.hard-word-register {
   display: none;
 }
@@ -128,6 +131,7 @@ button.hard-word-register {
   bottom: 10px;
   padding: 5px;
   cursor: pointer;
+  border-radius: 10px;
 }
 .mark-cancellation{
     display: none;

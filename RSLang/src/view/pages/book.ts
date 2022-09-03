@@ -89,7 +89,7 @@ class Book {
             .getAllUserWords() as unknown as IUserWords[];
           hardWordUser.forEach((h) => {
             (document.querySelectorAll('.word-name') as unknown as HTMLHeadElement[]).forEach((w) => {
-              if (h.optional.word === w.innerHTML) {
+              if (h.difficulty === 'hard' && h.optional.word === w.innerHTML) {
                 ((w as HTMLHeadElement).parentNode as HTMLDivElement).setAttribute('color', 'hard');
               }
             });
@@ -102,6 +102,22 @@ class Book {
           await this.deleteUserWords(el, 'hard');
           await BackendAPIController.getAllUserWords();
           this.buildPageHard();
+        };
+      }
+
+      const studied = document.querySelector(`.studied-${el.word}`) as HTMLDivElement;
+      if (studied) {
+        studied.onclick = async () => {
+          await this.addStudiedWords(el);
+          const studiedWordUser = await BackendAPIController
+            .getAllUserWords() as unknown as IUserWords[];
+          studiedWordUser.forEach((h) => {
+            (document.querySelectorAll('.word-name') as unknown as HTMLHeadElement[]).forEach(async (w) => {
+              if (h.difficulty === 'study' && h.optional.word === w.innerHTML) {
+                ((w as HTMLHeadElement).parentNode as HTMLDivElement).setAttribute('color', 'study');
+              }
+            });
+          });
         };
       }
     });
@@ -153,8 +169,11 @@ class Book {
       const hardWordUser = await BackendAPIController.getAllUserWords() as unknown as IUserWords[];
       hardWordUser.forEach((h) => {
         (document.querySelectorAll('.word-name') as unknown as HTMLHeadElement[]).forEach((w) => {
-          if (h.optional.word === w.innerHTML) {
+          if (h.difficulty === 'hard' && h.optional.word === w.innerHTML) {
             ((w as HTMLHeadElement).parentNode as HTMLDivElement).setAttribute('color', 'hard');
+          }
+          if (h.difficulty === 'study' && h.optional.word === w.innerHTML) {
+            ((w as HTMLHeadElement).parentNode as HTMLDivElement).setAttribute('color', 'study');
           }
         });
       });

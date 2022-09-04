@@ -4,6 +4,7 @@ import checkAutorization from '../../utils/checkAutorization';
 import Game from './game';
 import Audiocall from './audiocall';
 import SprintGame from './sprintgame';
+import Footer from '../components/footer';
 
 class Book {
   color: string;
@@ -16,12 +17,15 @@ class Book {
 
   sprintGame: SprintGame;
 
+  footer: Footer;
+
   constructor() {
     this.color = '';
     this.numberHard = 0;
     this.audiocall = new Audiocall();
     this.game = new Game();
     this.sprintGame = new SprintGame();
+    this.footer = new Footer();
   }
 
   sectionBook(): string {
@@ -376,6 +380,7 @@ class Book {
     audiocall.onclick = async () => {
       workPages.innerHTML = '<div class="audiocall__game"></div>';
       this.audiocall.render(startTheGame);
+      this.footer.displayFooter();
     };
     sprint.onclick = async () => {
       const wordsAllHard = [] as IWord[];
@@ -393,9 +398,9 @@ class Book {
       };
       await processArray();
       const arrayStartGame = startTheGame.concat(wordsAllHard);
-      console.log(arrayStartGame);
       workPages.innerHTML = '<div class="sprintgame__container"></div>';
       this.sprintGame.render(arrayStartGame);
+      this.footer.displayFooter();
     };
   }
 }

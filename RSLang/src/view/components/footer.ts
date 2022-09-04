@@ -70,7 +70,9 @@ class Footer {
   }
 
   displayFooter(): void {
-    if (document.querySelector('.games') as HTMLElement) {
+    if (document.querySelector('.games') as HTMLElement
+    || document.querySelector('.sprintgame__container') as HTMLElement
+    || document.querySelector('.audiocall__game') as HTMLElement) {
       (document.querySelector('.footer') as HTMLElement).style.visibility = 'hidden';
     } else (document.querySelector('.footer') as HTMLElement).style.visibility = 'visibile';
   }

@@ -1,19 +1,35 @@
 import { BackendAPIController } from '../../controller/api/api';
 import { IUserWords, IWord } from '../../controller/api/interfaces';
 import checkAutorization from '../../utils/checkAutorization';
+import Game from './game';
+import Audiocall from './audiocall';
+import SprintGame from './sprintgame';
 
 class Book {
   color: string;
 
   numberHard: number;
 
+  audiocall: Audiocall;
+
+  game: Game;
+
+  sprintGame: SprintGame;
+
   constructor() {
     this.color = '';
     this.numberHard = 0;
+    this.audiocall = new Audiocall();
+    this.game = new Game();
+    this.sprintGame = new SprintGame();
   }
 
   sectionBook(): string {
     return `
+    <div class="link-games">
+      <div class="link-games__audiocall link-games__game">Аудиовызов</div>
+      <div class="link-games__sprint link-games__game">Спринт</div>
+    </div>
     <div class="hardest-words">
       <button color="pink">1</button>
       <button color="blue">2</button>
@@ -175,6 +191,7 @@ class Book {
         .getAllWords(pageNum, this.numberHard) as unknown as IWord[];
       this.bookItem(words);
       this.backgroundWordsCard(this.numberHard);
+      this.linkGames(words, pageNum);
       const flag = await checkAutorization();
       if (flag) {
         // eslint-disable-next-line max-len
@@ -249,8 +266,10 @@ class Book {
     }
     if (+this.numberHard < 6) {
       this.buildPageOrdinary(indexPage);
+      (document.querySelector('.link-games') as HTMLDivElement).style.display = 'flex';
     } else if (+this.numberHard === 6) {
       this.buildPageHard();
+      (document.querySelector('.link-games') as HTMLDivElement).style.display = 'none';
     }
   }
 
@@ -347,6 +366,37 @@ class Book {
         await BackendAPIController.deleteUserWord(element.id);
       }
     });
+  }
+
+  async linkGames(startTheGame: IWord[], number: number): Promise<void> {
+    await this.checkAutirisationBook();
+    const audiocall = document.querySelector('.link-games__audiocall') as HTMLDivElement;
+    const sprint = document.querySelector('.link-games__sprint') as HTMLDivElement;
+    const workPages = document.querySelector('.work') as HTMLElement;
+    audiocall.onclick = async () => {
+      workPages.innerHTML = '<div class="audiocall__game"></div>';
+      this.audiocall.render(startTheGame);
+    };
+    sprint.onclick = async () => {
+      const wordsAllHard = [] as IWord[];
+      let n = number;
+      const processArray = async () => {
+        for (let i = n - 1; i > n - 4; i -= 1) {
+          if (i < 0) {
+            n = 30;
+            i = 30;
+          }
+          // eslint-disable-next-line max-len, no-await-in-loop
+          const array = await BackendAPIController.getAllWords(i, this.numberHard) as IWord[];
+          array.forEach((e) => wordsAllHard.push(e));
+        }
+      };
+      await processArray();
+      const arrayStartGame = startTheGame.concat(wordsAllHard);
+      console.log(arrayStartGame);
+      workPages.innerHTML = '<div class="sprintgame__container"></div>';
+      this.sprintGame.render(arrayStartGame);
+    };
   }
 }
 export default Book;

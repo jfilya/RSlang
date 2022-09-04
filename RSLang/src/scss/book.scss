@@ -95,8 +95,8 @@ audio {
   background-color: #ff7171;
 }
 [color='study'] {
-    background-color: transparent;
-  }
+  background-color: transparent;
+}
 button.hard-word-register {
   display: none;
 }
@@ -133,6 +133,23 @@ button.hard-word-register {
   cursor: pointer;
   border-radius: 10px;
 }
-.mark-cancellation{
-    display: none;
+.mark-cancellation {
+  display: none;
+}
+.link-games {
+  display: flex;
+  justify-content: center;
+  padding-top: 90px;
+  &__game {
+    width: 110px;
+    padding: 10px;
+    border: 1px solid black;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    cursor: pointer;
+  }
+  &__audiocall {
+    margin-right: 50px;
+  }
 }

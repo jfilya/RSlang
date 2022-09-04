@@ -9,9 +9,8 @@ class Footer {
         } else {
           footer?.removeAttribute('hidden');
         }
-      }); 
+      });
     }, 0);
-    
 
     return `
             <footer class="footer">

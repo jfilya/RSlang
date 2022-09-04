@@ -43,6 +43,7 @@
         "webpack-merge": "^5.7.3"
     },
     "dependencies": {
+        "@types/google.visualization": "^0.0.68",
         "@types/wnumb": "^1.2.1",
         "gh-pages": "^4.0.0",
         "wnumb": "^1.2.0"

@@ -277,16 +277,20 @@ class BackendAPIController {
           'Content-Type': 'application/json',
         },
       })
-    ).json().then(e => e).catch(async e => {
-      return {learnedwords: 0, optional: {'sprintGame': {
-        'Max Streak' : 0,
-        'Percentage of right': 0,
-        }, 'audiocallGame': {
-        'Max Streak' : 0,
-        'Percentage of right': 0},
-        'words' : ''},
-      };
-    });
+    ).json().then((e) => e).catch(async (e) => ({
+      learnedwords: 0,
+      optional: {
+        sprintGame: {
+          'Max Streak': 0,
+          'Percentage of right': 0,
+        },
+        audiocallGame: {
+          'Max Streak': 0,
+          'Percentage of right': 0,
+        },
+        words: '',
+      },
+    }));
   }
 
   static async updateUserStatistics(

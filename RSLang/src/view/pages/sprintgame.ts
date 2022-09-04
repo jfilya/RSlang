@@ -13,7 +13,7 @@ const startGameConfig = {
   statistics: {
     currentStreak: 0,
     maxStreak: 0,
-  } 
+  },
 };
 
 const url = `${BASE_URL}/`;
@@ -165,27 +165,32 @@ export default class SprintGame {
   async updateStatsForUser() {
     const serverStats = await BackendAPIController.getUserStatistics();
     console.log(serverStats);
-    const currentStreak = (serverStats?.optional as {'sprintGame': {'Max Streak': number}}).sprintGame['Max Streak'];
+    const currentStreak = (serverStats?.optional as { 'sprintGame': { 'Max Streak': number } }).sprintGame['Max Streak'];
     const maxStreak = Math.max(this.gameConfig.statistics.maxStreak, this.gameConfig.statistics.currentStreak);
-    const percentage = (serverStats?.optional as {'sprintGame': {'Percentage of right': number}}).sprintGame['Percentage of right'];
-    const rightWords = this.gameConfig.wordsForGame.filter(({rightOrWrong}) => rightOrWrong).map(({word}) => word);
-    const allLearnedWords = (serverStats?.optional as Object).hasOwnProperty('words') ? 
-    [...new Set([...(serverStats?.optional as {words: string}).words.split(','), ...rightWords])].filter(el => el): 
-    rightWords;
-    
+    const percentage = (serverStats?.optional as { 'sprintGame': { 'Percentage of right': number } }).sprintGame['Percentage of right'];
+    const rightWords = this.gameConfig.wordsForGame.filter(({ rightOrWrong }) => rightOrWrong).map(({ word }) => word);
+    const allLearnedWords = (serverStats?.optional as Object).hasOwnProperty('words')
+      ? [...new Set([...(serverStats?.optional as { words: string }).words.split(','), ...rightWords])].filter((el) => el)
+      : rightWords;
+
     if ((serverStats?.optional as Object).hasOwnProperty('sprintGame')) {
-      await BackendAPIController.updateUserStatistics(allLearnedWords.length, {...serverStats?.optional,
-        'sprintGame' : {
-          'Max Streak' : Math.max(currentStreak, maxStreak),
-          'Percentage of right' : Math.max(percentage, +((rightWords.length / this.gameConfig.currentLevel) * 100).toFixed(0)),
-          }, 'words' : allLearnedWords.join(','),
+      await BackendAPIController.updateUserStatistics(allLearnedWords.length, {
+        ...serverStats?.optional,
+        sprintGame: {
+          'Max Streak': Math.max(currentStreak, maxStreak),
+          'Percentage of right': Math.max(percentage, +((rightWords.length / this.gameConfig.currentLevel) * 100).toFixed(0)),
+        },
+        words: allLearnedWords.join(','),
       });
     } else {
-      await BackendAPIController.updateUserStatistics(rightWords.length, {...serverStats?.optional, 
-        'sprintGame' : {
-          'Max Streak' : maxStreak,
-          'Percentage of right' : +((rightWords.length / this.gameConfig.currentLevel) * 100).toFixed(0)
-        }, 'words' : allLearnedWords.join(',')});
+      await BackendAPIController.updateUserStatistics(rightWords.length, {
+        ...serverStats?.optional,
+        sprintGame: {
+          'Max Streak': maxStreak,
+          'Percentage of right': +((rightWords.length / this.gameConfig.currentLevel) * 100).toFixed(0),
+        },
+        words: allLearnedWords.join(','),
+      });
     }
   }
 

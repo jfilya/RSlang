@@ -84,6 +84,7 @@ class Book {
       const difficult = document.querySelector(`.difficult-${el.word}`) as HTMLDivElement;
       if (difficult) {
         difficult.onclick = async () => {
+          await this.deleteUserWords(el, 'study');
           await this.addHardWords(el);
           const hardWordUser = await BackendAPIController
             .getAllUserWords() as unknown as IUserWords[];
@@ -108,16 +109,24 @@ class Book {
       const studied = document.querySelector(`.studied-${el.word}`) as HTMLDivElement;
       if (studied) {
         studied.onclick = async () => {
-          await this.addStudiedWords(el);
-          const studiedWordUser = await BackendAPIController
-            .getAllUserWords() as unknown as IUserWords[];
-          studiedWordUser.forEach((h) => {
-            (document.querySelectorAll('.word-name') as unknown as HTMLHeadElement[]).forEach(async (w) => {
-              if (h.difficulty === 'study' && h.optional.word === w.innerHTML) {
-                ((w as HTMLHeadElement).parentNode as HTMLDivElement).setAttribute('color', 'study');
-              }
+          const wordBlock = ((studied as HTMLDivElement).parentNode as HTMLDivElement)
+            .parentNode as HTMLDivElement;
+          if (wordBlock.getAttribute('color') === 'study') {
+            wordBlock.setAttribute('color', `${localStorage.color}`);
+            await this.deleteUserWords(el, 'study');
+          } else {
+            await this.deleteUserWords(el, 'hard');
+            await this.addStudiedWords(el);
+            const studiedWordUser = await BackendAPIController
+              .getAllUserWords() as unknown as IUserWords[];
+            studiedWordUser.forEach((h) => {
+              (document.querySelectorAll('.word-name') as unknown as HTMLHeadElement[]).forEach(async (w) => {
+                if (h.difficulty === 'study' && h.optional.word === w.innerHTML) {
+                  ((w as HTMLHeadElement).parentNode as HTMLDivElement).setAttribute('color', 'study');
+                }
+              });
             });
-          });
+          }
         };
       }
     });
@@ -166,17 +175,23 @@ class Book {
         .getAllWords(pageNum, this.numberHard) as unknown as IWord[];
       this.bookItem(words);
       this.backgroundWordsCard(this.numberHard);
-      const hardWordUser = await BackendAPIController.getAllUserWords() as unknown as IUserWords[];
-      hardWordUser.forEach((h) => {
-        (document.querySelectorAll('.word-name') as unknown as HTMLHeadElement[]).forEach((w) => {
-          if (h.difficulty === 'hard' && h.optional.word === w.innerHTML) {
-            ((w as HTMLHeadElement).parentNode as HTMLDivElement).setAttribute('color', 'hard');
-          }
-          if (h.difficulty === 'study' && h.optional.word === w.innerHTML) {
-            ((w as HTMLHeadElement).parentNode as HTMLDivElement).setAttribute('color', 'study');
-          }
-        });
-      });
+      const flag = await checkAutorization();
+      if (flag) {
+        // eslint-disable-next-line max-len
+        const hardWordUser = await BackendAPIController.getAllUserWords() as unknown as IUserWords[];
+        if (hardWordUser.length) {
+          hardWordUser.forEach((h) => {
+            (document.querySelectorAll('.word-name') as unknown as HTMLHeadElement[]).forEach((w) => {
+              if (h.difficulty === 'hard' && h.optional.word === w.innerHTML) {
+                ((w as HTMLHeadElement).parentNode as HTMLDivElement).setAttribute('color', 'hard');
+              }
+              if (h.difficulty === 'study' && h.optional.word === w.innerHTML) {
+                ((w as HTMLHeadElement).parentNode as HTMLDivElement).setAttribute('color', 'study');
+              }
+            });
+          });
+        }
+      }
     };
     await showPage(list[indexPage]);
     const disableBtn = () => {
@@ -328,7 +343,9 @@ class Book {
   async deleteUserWords(element: IWord, difficulty: string): Promise<void> {
     const wordUser = await BackendAPIController.getAllUserWords() as unknown as IUserWords[];
     wordUser.forEach(async (w) => {
-      if (w.difficulty === difficulty) { await BackendAPIController.deleteUserWord(element.id); }
+      if (w && w.difficulty === difficulty) {
+        await BackendAPIController.deleteUserWord(element.id);
+      }
     });
   }
 }

@@ -44,6 +44,14 @@ class Book {
       <button class="hard-word-register" color="hard">7</button>
     </div>
     <div class="pagination">
+    <button class="pagination__arrow  disableBtn" id="arrowStart">
+      <svg width="10" height="11" viewBox="0 0 10 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M0.958984 6.08789L9.99219 10.7852V9.44727L2.48242 5.53125L9.99219 1.625V0.287109L0.958984 4.98438V6.08789Z" fill="#292929"/>
+      </svg>  
+      <svg width="10" height="11" viewBox="0 0 10 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M0.958984 6.08789L9.99219 10.7852V9.44727L2.48242 5.53125L9.99219 1.625V0.287109L0.958984 4.98438V6.08789Z" fill="#292929"/>
+      </svg>  
+    </button>
     <button class="pagination__arrow  disableBtn" id="arrowPrev">
       <svg width="10" height="11" viewBox="0 0 10 11" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M0.958984 6.08789L9.99219 10.7852V9.44727L2.48242 5.53125L9.99219 1.625V0.287109L0.958984 4.98438V6.08789Z" fill="#292929"/>
@@ -54,6 +62,14 @@ class Book {
     /30
     </div>
     <button class="pagination__arrow " id="arrowNext">
+      <svg width="10" height="11" viewBox="0 0 10 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M9.04102 6.08789L0.0078125 10.7852V9.44727L7.51758 5.53125L0.0078125 1.625V0.287109L9.04102 4.98438V6.08789Z" fill="#292929"/>
+      </svg>
+    </button>
+    <button class="pagination__arrow " id="arrowEnd">
+      <svg width="10" height="11" viewBox="0 0 10 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M9.04102 6.08789L0.0078125 10.7852V9.44727L7.51758 5.53125L0.0078125 1.625V0.287109L9.04102 4.98438V6.08789Z" fill="#292929"/>
+      </svg>
       <svg width="10" height="11" viewBox="0 0 10 11" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M9.04102 6.08789L0.0078125 10.7852V9.44727L7.51758 5.53125L0.0078125 1.625V0.287109L9.04102 4.98438V6.08789Z" fill="#292929"/>
       </svg>
@@ -180,6 +196,8 @@ class Book {
     }
     const arrowLeft = document.querySelector('#arrowPrev') as HTMLButtonElement;
     const arrowRight = document.querySelector('#arrowNext') as HTMLButtonElement;
+    const arrowStart = document.querySelector('#arrowStart') as HTMLButtonElement;
+    const arrowEnd = document.querySelector('#arrowEnd') as HTMLButtonElement;
 
     const list = document.querySelectorAll('#pagination li') as unknown as HTMLLIElement[];
     const showPage = async (li: Element): Promise<void> => {
@@ -218,14 +236,27 @@ class Book {
     const disableBtn = () => {
       if (indexPage >= 29) {
         arrowRight.disabled = true;
+        arrowEnd.disabled = true;
         indexPage = 29;
-      } else arrowRight.disabled = false;
+      } else {
+        arrowRight.disabled = false;
+        arrowEnd.disabled = false;
+      }
       if (indexPage <= 0) {
         arrowLeft.disabled = true;
+        arrowStart.disabled = true;
         indexPage = 0;
-      } else arrowLeft.disabled = false;
+      } else {
+        arrowLeft.disabled = false;
+        arrowStart.disabled = false;
+      }
     };
     disableBtn();
+    arrowStart.onclick = (): void => {
+      indexPage = 0;
+      disableBtn();
+      showPage(list[indexPage]);
+    };
     arrowRight.onclick = (): void => {
       indexPage += 1;
       disableBtn();
@@ -233,6 +264,11 @@ class Book {
     };
     arrowLeft.onclick = (): void => {
       indexPage -= 1;
+      disableBtn();
+      showPage(list[indexPage]);
+    };
+    arrowEnd.onclick = (): void => {
+      indexPage = 29;
       disableBtn();
       showPage(list[indexPage]);
     };

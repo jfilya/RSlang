@@ -19,7 +19,7 @@
     }
     &__logout {
         border: 1px solid black;
-        background-color: red;
+        background-color: #015288;
         transition: 0.5s;
         border-radius: 10px;
         padding: 5px 10px;
@@ -29,7 +29,7 @@
         top: 100px;
         z-index: 3;
         &:hover {
-            background-color: rgb(253, 130, 130);
+            background-color: #6ac3ff;
             transition: 0.5s;
         }
     }

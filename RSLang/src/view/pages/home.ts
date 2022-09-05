@@ -34,7 +34,7 @@ class Home {
                     />
                   </svg>
                   <span class="team__text"> Julia Filippova</span></a>
-                <p>Сделала стартовую страницу</p>
+                <p>Сделала стартовую страницу и учебник</p>
               </li>
               <li>
                 <img src="assets/Stepan.jpg" alt="Stepan">

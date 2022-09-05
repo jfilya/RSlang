@@ -33,7 +33,7 @@ class Statistic {
 
   async getUserStatsFromGames() {
     const { learnedWords, optional } = await BackendAPIController.getUserStatistics() as IStatisticsResp;
-    (document.querySelector('.learned_words') as HTMLElement).textContent = String(learnedWords);
+    (document.querySelector('.learned_words') as HTMLElement).textContent = String(learnedWords || 0);
     const stats = [
       ['Статистика', 'Аудиовызов', 'Спринт'],
       ['Максимальная серия угаданных слов', (optional as { 'audiocallGame': { 'Max Streak': number } }).audiocallGame['Max Streak'], (optional as { 'sprintGame': { 'Max Streak': number } }).sprintGame['Max Streak']],

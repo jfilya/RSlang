@@ -5,6 +5,7 @@ interface IAudioCallGame {
   audioDescription: string,
   fakeWords: string[],
   rightOrWrong: boolean,
+  word: string,
 }
 
 const randomizer = (fakeWords: IWord[]) => {
@@ -22,6 +23,7 @@ function generateWordsForGame(realWord: IWord, fakeWords: IWord[]): IAudioCallGa
     audioDescription: realWord.audio,
     fakeWords: randomizer(fakeWords),
     rightOrWrong: false,
+    word: realWord.word,
   };
 }
 

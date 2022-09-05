@@ -70,7 +70,7 @@ class Home {
                     />
                   </svg>
                   <span> Oleksandr Kotlubieiev</span></a>
-                  <p>Организация работы с бэкендом</p>
+                  <p>Организация работы с бэкендом, игры</p>
               </li>
             </ul>
           </div>

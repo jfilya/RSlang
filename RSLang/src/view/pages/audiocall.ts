@@ -8,6 +8,10 @@ interface IGameConfig {
   currentLevel: number;
   allLevel: number;
   wordsForGame: IAudioCallGame[];
+  statistics: {
+    currentStreak: number;
+    maxStreak: number;
+  }
 }
 
 const startGameConfig = {
@@ -16,6 +20,10 @@ const startGameConfig = {
   currentLevel: 0,
   allLevel: 0,
   wordsForGame: [],
+  statistics: {
+    currentStreak: 0,
+    maxStreak: 0,
+  },
 };
 
 const urlAudioFile = `${BASE_URL}/`;
@@ -31,7 +39,7 @@ class Audiocall {
   async getDataSet(group: number) {
     const req = await BackendAPIController.getAllWords(
       Math.floor(Math.random() * 30),
-      group
+      group,
     );
     return req;
   }
@@ -119,6 +127,38 @@ class Audiocall {
     );
   }
 
+  async updateStatsForUser() {
+    const serverStats = await BackendAPIController.getUserStatistics();
+    console.log(serverStats);
+    const currentStreak = (serverStats?.optional as { 'audiocallGame': { 'Max Streak': number } }).audiocallGame['Max Streak'];
+    const maxStreak = Math.max(this.gameConfig.statistics.maxStreak, this.gameConfig.statistics.currentStreak);
+    const percentage = (serverStats?.optional as { 'audiocallGame': { 'Percentage of right': number } }).audiocallGame['Percentage of right'];
+    const rightWords = this.gameConfig.wordsForGame.filter(({ rightOrWrong }) => rightOrWrong).map(({ word }) => word);
+    const allLearnedWords = (serverStats?.optional as Object).hasOwnProperty('words')
+      ? [...new Set([...(serverStats?.optional as { words: string }).words.split(','), ...rightWords])].filter((el) => el)
+      : rightWords;
+
+    if ((serverStats?.optional as Object).hasOwnProperty('audiocallGame')) {
+      await BackendAPIController.updateUserStatistics(allLearnedWords.length, {
+        ...serverStats?.optional,
+        audiocallGame: {
+          'Max Streak': Math.max(currentStreak, maxStreak),
+          'Percentage of right': Math.max(percentage, +((rightWords.length / this.gameConfig.allLevel) * 100).toFixed(0)),
+        },
+        words: allLearnedWords.join(','),
+      });
+    } else {
+      await BackendAPIController.updateUserStatistics(rightWords.length, {
+        ...serverStats?.optional,
+        audiocallGame: {
+          'Max Streak': maxStreak,
+          'Percentage of right': +((rightWords.length / this.gameConfig.allLevel) * 100).toFixed(0),
+        },
+        words: allLearnedWords.join(','),
+      });
+    }
+  }
+
   nextLevel(allAnswerButton: Element[]) {
     if (
       this.gameConfig.currentHearts !== 0
@@ -147,7 +187,10 @@ class Audiocall {
 
         if (!result) {
           this.heartFail(this.gameConfig.currentHearts);
+          this.gameConfig.statistics.maxStreak = this.gameConfig.statistics.currentStreak;
           this.gameConfig.currentHearts -= 1;
+        } else {
+          this.gameConfig.statistics.currentStreak += 1;
         }
         this.nextLevel(allAnswerButton as Element[]);
       }
@@ -166,6 +209,7 @@ class Audiocall {
       this.gameConfig.currentLevel = 0;
       this.showGame();
     });
+    this.updateStatsForUser();
   }
 
   // при переходе из учебника должен работать этот метод

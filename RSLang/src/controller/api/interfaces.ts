@@ -36,7 +36,7 @@ export interface IUserWords {
 
 export interface IStatisticsResp {
   learnedWords: number,
-  optional: IWord,
+  optional: {},
 }
 
 export interface IUserSettings {

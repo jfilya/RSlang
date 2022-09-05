@@ -51,6 +51,9 @@ class Page {
     if (await checkAutorization()) {
       loginBtn?.classList.add('header_hidden');
       logoutBtn?.classList.remove('header_hidden');
+    } else {
+      loginBtn?.classList.remove('header_hidden');
+      logoutBtn?.classList.add('header_hidden');
     }
   }
 }

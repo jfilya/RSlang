@@ -125,6 +125,7 @@
   display: flex;
   justify-content: space-around;
   gap: 35px;
+  margin-bottom: 8rem;
 }
 
 .game__btn {
@@ -140,6 +141,19 @@
   display: flex;
     flex-direction: column;
     align-items: center;
+}
+
+.audiocall__game {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  margin: 3rem;
+
+  p {
+    text-align: center;
+  }
 }
 
 .audiocall__game {

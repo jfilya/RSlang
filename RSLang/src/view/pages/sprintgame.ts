@@ -1,6 +1,6 @@
-/* eslint-disable max-len */
 import { BackendAPIController, BASE_URL } from '../../controller/api/api';
-import { IWord, ISprintWord, IGameConfig } from '../../controller/api/interfaces';
+import { IWord, ISprintWord, IGameConfigSprint } from '../../controller/api/interfaces';
+
 
 const startGameConfig = {
   points: 0,
@@ -11,6 +11,10 @@ const startGameConfig = {
   currentTime: 60,
   currentLevel: 0,
   wordsForGame: [],
+  statistics: {
+    currentStreak: 0,
+    maxStreak: 0,
+  },
 };
 
 const url = `${BASE_URL}/`;
@@ -20,7 +24,7 @@ export default class SprintGame {
 
   container: HTMLElement = null as unknown as HTMLElement;
 
-  gameConfig: IGameConfig = { ...startGameConfig };
+  gameConfig: IGameConfigSprint = { ...startGameConfig };
 
   async getDataSet(group: number): Promise<IWord[]> {
     const req = (await Promise.all(Array(6).fill(0).map(() => BackendAPIController.getAllWords(
@@ -80,7 +84,6 @@ export default class SprintGame {
 
   private allLampsAreOff() {
     const firstBird = this.gameConfig.currentBirds === 1;
-    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     !firstBird && this.birdDissappear(this.gameConfig.currentBirds);
     this.gameConfig.currentBirds -= firstBird ? 0 : 1;
   }
@@ -128,21 +131,12 @@ export default class SprintGame {
   }
 
   listenersForTheGame(): void {
-    document.querySelector('.audio-btn')?.addEventListener('click', () => {
-      this.playAudio();
-    });
-    document.querySelector('.prev-btn')?.addEventListener('click', () => {
-      this.rightOrWrongAnswer(false);
-    });
     window.addEventListener('keydown', (e) => {
       if (e.key === 'ArrowLeft') {
         this.rightOrWrongAnswer(false);
       } else if (e.key === 'ArrowRight') {
         this.rightOrWrongAnswer(true);
       }
-    });
-    document.querySelector('.next-btn')?.addEventListener('click', () => {
-      this.rightOrWrongAnswer(true);
     });
   }
 
@@ -171,6 +165,39 @@ export default class SprintGame {
       this.gameConfig = { ...startGameConfig, wordsForGame: wordForGame };
       this.showTheGame(false);
     });
+    this.updateStatsForUser();
+  }
+
+  async updateStatsForUser() {
+    const serverStats = await BackendAPIController.getUserStatistics();
+    console.log(serverStats);
+    const currentStreak = (serverStats?.optional as { 'sprintGame': { 'Max Streak': number } }).sprintGame['Max Streak'];
+    const maxStreak = Math.max(this.gameConfig.statistics.maxStreak, this.gameConfig.statistics.currentStreak);
+    const percentage = (serverStats?.optional as { 'sprintGame': { 'Percentage of right': number } }).sprintGame['Percentage of right'];
+    const rightWords = this.gameConfig.wordsForGame.filter(({ rightOrWrong }) => rightOrWrong).map(({ word }) => word);
+    const allLearnedWords = (serverStats?.optional as Object).hasOwnProperty('words')
+      ? [...new Set([...(serverStats?.optional as { words: string }).words.split(','), ...rightWords])].filter((el) => el)
+      : rightWords;
+
+    if ((serverStats?.optional as Object).hasOwnProperty('sprintGame')) {
+      await BackendAPIController.updateUserStatistics(allLearnedWords.length, {
+        ...serverStats?.optional,
+        sprintGame: {
+          'Max Streak': Math.max(currentStreak, maxStreak),
+          'Percentage of right': Math.max(percentage, +((rightWords.length / this.gameConfig.currentLevel) * 100).toFixed(0)),
+        },
+        words: allLearnedWords.join(','),
+      });
+    } else {
+      await BackendAPIController.updateUserStatistics(rightWords.length, {
+        ...serverStats?.optional,
+        sprintGame: {
+          'Max Streak': maxStreak,
+          'Percentage of right': +((rightWords.length / this.gameConfig.currentLevel) * 100).toFixed(0),
+        },
+        words: allLearnedWords.join(','),
+      });
+    }
   }
 
   showTheGame(firstTime: boolean): void {
@@ -197,6 +224,15 @@ export default class SprintGame {
       </div>
     </div>
     `;
+    document.querySelector('.audio-btn')?.addEventListener('click', () => {
+      this.playAudio();
+    });
+    document.querySelector('.prev-btn')?.addEventListener('click', () => {
+      this.rightOrWrongAnswer(false);
+    });
+    document.querySelector('.next-btn')?.addEventListener('click', () => {
+      this.rightOrWrongAnswer(true);
+    });
     if (firstTime) {
       this.listenersForTheGame();
     }

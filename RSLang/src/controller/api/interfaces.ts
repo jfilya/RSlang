@@ -59,7 +59,7 @@ export interface ISprintWord {
   rightOrWrong: boolean
 }
 
-export interface IGameConfig {
+export interface IGameConfigSprint {
   points: number;
   currentLamps: number;
   allLamps: number;
@@ -68,4 +68,8 @@ export interface IGameConfig {
   currentTime: number;
   currentLevel: number,
   wordsForGame: ISprintWord[];
+  statistics: {
+    currentStreak: number;
+    maxStreak: number;
+  }
 }

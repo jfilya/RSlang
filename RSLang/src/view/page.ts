@@ -32,6 +32,7 @@ class Page {
     root.append(main);
     main.innerHTML = this.main();
     this.home.startPage();
+    this.header.logout();
   }
 
   main(): string {

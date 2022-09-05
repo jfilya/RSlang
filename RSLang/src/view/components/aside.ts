@@ -5,7 +5,6 @@ class Aside {
             <aside class="aside">
               <ul>
                 <li class="aside__el home">Главная</li>
-                <li class="aside__el authorization">Авторизация</li>
                 <li class="aside__el book">Учебник</li>
                 <li class="aside__el game">Мини-игры</li>
                 <li class="aside__el statistic">Статистика</li>

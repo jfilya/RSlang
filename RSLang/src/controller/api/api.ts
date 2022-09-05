@@ -277,7 +277,7 @@ class BackendAPIController {
           'Content-Type': 'application/json',
         },
       })
-    ).json().then((e) => e).catch(async (e) => ({
+    ).json().then((e) => e).catch(async () => ({
       learnedwords: 0,
       optional: {
         sprintGame: {

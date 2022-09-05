@@ -37,7 +37,7 @@ class Footer {
                           fill="white"
                         />
                       </svg>
-                      <span> Julia Filippova</span></a
+                      <span class="footer__text"> Julia Filippova</span></a
                     >
                   </li>
                   <li>
@@ -54,7 +54,7 @@ class Footer {
                           fill="white"
                         />
                       </svg>
-                      <span> Stepan Volkov</span></a
+                      <span class="footer__text"> Stepan Volkov</span></a
                     >
                   </li>
                   <li>
@@ -71,7 +71,7 @@ class Footer {
                           fill="white"
                         />
                       </svg>
-                      <span> Oleksandr Kotlubieiev</span></a
+                      <span class="footer__text"> Oleksandr Kotlubieiev</span></a
                     >
                   </li>
                 </ul>

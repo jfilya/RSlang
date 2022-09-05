@@ -6,5 +6,6 @@ export default function userLogout():void {
     localStorage.clear();
     loginBtn?.classList.remove('header_hidden');
     logoutBtn?.classList.add('header_hidden');
+    window.location.reload();
   });
 }

@@ -9,5 +9,6 @@ const menu = new Menu();
 menu.buildPages();
 menu.active();
 menu.windowLocationLoad();
+page.authorizationCheak();
 const login = new Login();
 login.createLoginPopup();

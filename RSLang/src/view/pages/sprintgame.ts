@@ -1,7 +1,6 @@
 import { BackendAPIController, BASE_URL } from '../../controller/api/api';
 import { IWord, ISprintWord, IGameConfigSprint } from '../../controller/api/interfaces';
 
-
 const startGameConfig = {
   points: 0,
   currentLamps: 0,
@@ -84,7 +83,7 @@ export default class SprintGame {
 
   private allLampsAreOff() {
     const firstBird = this.gameConfig.currentBirds === 1;
-    !firstBird && this.birdDissappear(this.gameConfig.currentBirds);
+    if (!firstBird) this.birdDissappear(this.gameConfig.currentBirds);
     this.gameConfig.currentBirds -= firstBird ? 0 : 1;
   }
 

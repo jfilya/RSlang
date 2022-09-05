@@ -8,14 +8,13 @@ class Statistic {
     const stats = document.querySelector('.statistics__learned-words');
     const text = document.querySelector('.statistics__text');
     if (!autorized) {
-        stats?.setAttribute('hidden', 'hidden');
-        text?.removeAttribute('hidden');
-      } else {
-        text?.setAttribute('hidden', 'hidden');
-        stats?.removeAttribute('hidden');
+      stats?.setAttribute('hidden', 'hidden');
+      text?.removeAttribute('hidden');
+    } else {
+      text?.setAttribute('hidden', 'hidden');
+      stats?.removeAttribute('hidden');
     }
   }
-
 
   sectionStatistic(): string {
     setTimeout(() => {

@@ -6,7 +6,6 @@ import Audiocall from './audiocall';
 import SprintGame from './sprintgame';
 import Footer from '../components/footer';
 
-
 class Book {
   color: string;
 

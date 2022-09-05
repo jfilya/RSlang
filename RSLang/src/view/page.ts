@@ -1,3 +1,4 @@
+import checkAutorization from '../utils/checkAutorization';
 import Aside from './components/aside';
 import Footer from './components/footer';
 import Header from './components/header';
@@ -42,6 +43,15 @@ class Page {
         </section>
         ${this.footer.footer()}
         `;
+  }
+
+  async authorizationCheak() {
+    const loginBtn = document.querySelector('.header__register');
+    const logoutBtn = document.querySelector('.header__logout');
+    if (await checkAutorization()) {
+      loginBtn?.classList.add('header_hidden');
+      logoutBtn?.classList.remove('header_hidden');
+    }
   }
 }
 export default Page;

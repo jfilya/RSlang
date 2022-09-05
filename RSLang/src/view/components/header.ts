@@ -7,7 +7,7 @@ class Header {
         <nav class="header__menu">
           <h2 class="header__title">RSlang</h2>
           <img
-            class="header__register"
+            class="header__register header_hidden"
             src="assets/register.svg"
             alt="register"
           />

@@ -123,7 +123,7 @@
 
 .games {
   display: flex;
-  justify-content: center;
+  justify-content: space-around;
   gap: 35px;
   margin-bottom: 8rem;
 }
@@ -136,6 +136,24 @@
   height: 50px;
   font-weight: 800;
   border-radius: 0.6rem;
+}
+.audiocall__game {
+  display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.audiocall__game {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  margin: 3rem;
+
+  p {
+    text-align: center;
+  }
 }
 
 .audiocall__game {
@@ -161,7 +179,7 @@
 .group_of_words {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: space-around;
   gap: 15px;
   margin-top: 2rem;
 
@@ -172,6 +190,7 @@
     text-align: center;
     padding-top: 5px;
     border-radius: 50%;
+    cursor: pointer;
   }
 }
 

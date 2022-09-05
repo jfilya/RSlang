@@ -31,17 +31,23 @@ export interface IWord {
 
 export interface IUserWords {
   difficulty: string,
-  optional: {}
+  optional: IWord,
 }
 
 export interface IStatisticsResp {
   learnedWords: number,
-  optional: {}
+  optional: IWord,
 }
 
 export interface IUserSettings {
   wordsPerDay: number,
   optional: {}
+}
+
+export interface IRegister {
+  id: string;
+  name: string;
+  email: string;
 }
 
 export interface ISprintWord {

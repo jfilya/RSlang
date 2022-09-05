@@ -3,6 +3,7 @@ import Book from '../pages/book';
 import Game from '../pages/game';
 import Home from '../pages/home';
 import Statistic from '../pages/statistic';
+import Footer from './footer';
 
 class Menu {
   aside: HTMLElement;
@@ -66,6 +67,7 @@ class Menu {
     if (window.innerWidth <= 670) {
       this.aside.classList.remove('burger-active');
     }
+    new Footer().displayFooter();
   }
 
   windowLocationBook(): void {

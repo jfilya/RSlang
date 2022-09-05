@@ -1,18 +1,40 @@
 import { BackendAPIController } from '../../controller/api/api';
-import { IWord } from '../../controller/api/interfaces';
+import { IUserWords, IWord } from '../../controller/api/interfaces';
+import checkAutorization from '../../utils/checkAutorization';
+import Game from './game';
+import Audiocall from './audiocall';
+import SprintGame from './sprintgame';
+import Footer from '../components/footer';
+
 
 class Book {
   color: string;
 
   numberHard: number;
 
+  audiocall: Audiocall;
+
+  game: Game;
+
+  sprintGame: SprintGame;
+
+  footer: Footer;
+
   constructor() {
     this.color = '';
     this.numberHard = 0;
+    this.audiocall = new Audiocall();
+    this.game = new Game();
+    this.sprintGame = new SprintGame();
+    this.footer = new Footer();
   }
 
   sectionBook(): string {
     return `
+    <div class="link-games">
+      <div class="link-games__audiocall link-games__game">Аудиовызов</div>
+      <div class="link-games__sprint link-games__game">Спринт</div>
+    </div>
     <div class="hardest-words">
       <button color="pink">1</button>
       <button color="blue">2</button>
@@ -20,7 +42,7 @@ class Book {
       <button color="purple">4</button>
       <button color="green">5</button>
       <button color="yellow">6</button>
-      <button color="hard">7</button>
+      <button class="hard-word-register" color="hard">7</button>
     </div>
     <div class="pagination">
     <button class="pagination__arrow  disableBtn" id="arrowPrev">
@@ -48,7 +70,7 @@ class Book {
     array.forEach((el) => {
       words.innerHTML += `<div class="words__item">
       <img class="words__img" src="https://rs-lang-project-for-rs-school.herokuapp.com/${el.image}" alt="img-${el.word}">
-      <h3>${el.word}</h3>
+      <h3 class="word-name">${el.word}</h3>
       <p>${el.wordTranslate}</p>
       <p>${el.transcription}</p>
       <button class="listen-${el.word}"><svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -61,13 +83,71 @@ class Book {
       <p>${el.textMeaningTranslate}</p>
       <p>${el.textExample}</p>
       <p>${el.textExampleTranslate}</p>
+      <div class="hidden-btn">
+        <div class="mark-difficult difficult-${el.word}">Cложное</div>
+        <div class="mark-cancellation cancellation-${el.word}">Отменить</div>
+        <div class="mark-studied studied-${el.word}">Изученное</div>
+      </div>
       </div>`;
     });
+    this.btnClick(array);
+    this.checkAutirisationBook();
+  }
+
+  btnClick(array: IWord[]): void {
     array.forEach((el) => {
       const btn = (document.querySelector(`.listen-${el.word}`) as HTMLButtonElement);
       if (btn) {
         btn.onclick = () => {
           this.listenWords(el.audio, el.audioMeaning, el.audioExample);
+        };
+      }
+      const difficult = document.querySelector(`.difficult-${el.word}`) as HTMLDivElement;
+      if (difficult) {
+        difficult.onclick = async () => {
+          await this.deleteUserWords(el, 'study');
+          await this.addHardWords(el);
+          const hardWordUser = await BackendAPIController
+            .getAllUserWords() as unknown as IUserWords[];
+          hardWordUser.forEach((h) => {
+            (document.querySelectorAll('.word-name') as unknown as HTMLHeadElement[]).forEach((w) => {
+              if (h.difficulty === 'hard' && h.optional.word === w.innerHTML) {
+                ((w as HTMLHeadElement).parentNode as HTMLDivElement).setAttribute('color', 'hard');
+              }
+            });
+          });
+        };
+      }
+      const cancellation = document.querySelector(`.cancellation-${el.word}`) as HTMLDivElement;
+      if (cancellation) {
+        cancellation.onclick = async () => {
+          await this.deleteUserWords(el, 'hard');
+          await BackendAPIController.getAllUserWords();
+          this.buildPageHard();
+        };
+      }
+
+      const studied = document.querySelector(`.studied-${el.word}`) as HTMLDivElement;
+      if (studied) {
+        studied.onclick = async () => {
+          const wordBlock = ((studied as HTMLDivElement).parentNode as HTMLDivElement)
+            .parentNode as HTMLDivElement;
+          if (wordBlock.getAttribute('color') === 'study') {
+            wordBlock.setAttribute('color', `${localStorage.color}`);
+            await this.deleteUserWords(el, 'study');
+          } else {
+            await this.deleteUserWords(el, 'hard');
+            await this.addStudiedWords(el);
+            const studiedWordUser = await BackendAPIController
+              .getAllUserWords() as unknown as IUserWords[];
+            studiedWordUser.forEach((h) => {
+              (document.querySelectorAll('.word-name') as unknown as HTMLHeadElement[]).forEach(async (w) => {
+                if (h.difficulty === 'study' && h.optional.word === w.innerHTML) {
+                  ((w as HTMLHeadElement).parentNode as HTMLDivElement).setAttribute('color', 'study');
+                }
+              });
+            });
+          }
         };
       }
     });
@@ -83,21 +163,15 @@ class Book {
         this.color = el.getAttribute('color') as string;
       }
     });
-    (<HTMLDivElement[]><unknown>document.querySelectorAll('.words__item'))
+    (document.querySelectorAll('.words__item') as unknown as HTMLDivElement[])
       .forEach((w) => {
         w.removeAttribute('color');
         w.setAttribute('color', `${this.color}`);
       });
   }
 
-  async pagination(): Promise<void> {
-    let indexPage: number;
-    if (localStorage.activeList) {
-      indexPage = localStorage.activeList - 1;
-    } else indexPage = 0;
-    if (localStorage.numberHard) {
-      this.numberHard = localStorage.numberHard;
-    }
+  async buildPageOrdinary(indexPage: number): Promise<void> {
+    (document.querySelector('.pagination') as HTMLDivElement).style.display = 'flex';
     const pagination = document.querySelector('#pagination') as HTMLUListElement;
     pagination.innerHTML = '';
     for (let i = 1; i <= 30; i += 1) {
@@ -117,13 +191,31 @@ class Book {
       li.classList.add('activeList');
       localStorage.setItem('activeList', li.innerHTML);
       const pageNum = (+li.innerHTML) - 1;
+
       const words = await BackendAPIController
         .getAllWords(pageNum, this.numberHard) as unknown as IWord[];
       this.bookItem(words);
       this.backgroundWordsCard(this.numberHard);
+      this.linkGames(words, pageNum);
+      const flag = await checkAutorization();
+      if (flag) {
+        // eslint-disable-next-line max-len
+        const hardWordUser = await BackendAPIController.getAllUserWords() as unknown as IUserWords[];
+        if (hardWordUser.length) {
+          hardWordUser.forEach((h) => {
+            (document.querySelectorAll('.word-name') as unknown as HTMLHeadElement[]).forEach((w) => {
+              if (h.difficulty === 'hard' && h.optional.word === w.innerHTML) {
+                ((w as HTMLHeadElement).parentNode as HTMLDivElement).setAttribute('color', 'hard');
+              }
+              if (h.difficulty === 'study' && h.optional.word === w.innerHTML) {
+                ((w as HTMLHeadElement).parentNode as HTMLDivElement).setAttribute('color', 'study');
+              }
+            });
+          });
+        }
+      }
     };
     await showPage(list[indexPage]);
-
     const disableBtn = () => {
       if (indexPage >= 29) {
         arrowRight.disabled = true;
@@ -145,6 +237,45 @@ class Book {
       disableBtn();
       showPage(list[indexPage]);
     };
+  }
+
+  async buildPageHard(): Promise<void> {
+    const pagination = document.querySelector('#pagination') as HTMLUListElement;
+    (document.querySelector('.pagination') as HTMLDivElement).style.display = 'none';
+    pagination.innerHTML = '';
+    const hardWordUser = await BackendAPIController
+      .getAllUserWords() as unknown as IUserWords[];
+    const words = [] as IWord[];
+    hardWordUser.forEach((h) => {
+      if (h.difficulty === 'hard') { words.push(h.optional); }
+    }) as unknown as IWord[];
+    this.bookItem(words);
+    this.backgroundWordsCard(this.numberHard);
+    const cancellation = document.querySelectorAll('.mark-cancellation') as unknown as HTMLDivElement[];
+    cancellation.forEach((d) => {
+      d.style.display = 'flex';
+    });
+    const difficult = document.querySelectorAll('.mark-difficult') as unknown as HTMLDivElement[];
+    difficult.forEach((d) => {
+      d.style.display = 'none';
+    });
+  }
+
+  async pagination(): Promise<void> {
+    let indexPage: number;
+    if (localStorage.activeList) {
+      indexPage = localStorage.activeList - 1;
+    } else indexPage = 0;
+    if (localStorage.numberHard) {
+      this.numberHard = localStorage.numberHard;
+    }
+    if (+this.numberHard < 6) {
+      this.buildPageOrdinary(indexPage);
+      (document.querySelector('.link-games') as HTMLDivElement).style.display = 'flex';
+    } else if (+this.numberHard === 6) {
+      this.buildPageHard();
+      (document.querySelector('.link-games') as HTMLDivElement).style.display = 'none';
+    }
   }
 
   chooseWordDifficulty(): void {
@@ -191,6 +322,87 @@ class Book {
         };
       }
     }
+  }
+
+  async checkAutirisationBook(): Promise<void> {
+    const flag = await checkAutorization();
+    if (flag) {
+      const markAsDifficult = document.querySelectorAll('.hidden-btn') as unknown as HTMLDivElement[];
+      markAsDifficult.forEach((el) => {
+        el.style.display = 'flex';
+      });
+      const words = document.querySelectorAll('.words__item') as unknown as HTMLDivElement[];
+      words.forEach((el) => {
+        el.style.paddingBottom = '60px';
+      });
+      const hardWordRegister = document.querySelector('.hard-word-register') as HTMLButtonElement;
+      hardWordRegister.style.display = 'flex';
+    }
+  }
+
+  async addHardWords(element: IWord): Promise<void> {
+    const hardWordUser = await BackendAPIController.getAllUserWords() as unknown as IUserWords[];
+    const verification = hardWordUser.filter((h) => h.difficulty === 'hard' && h.optional.word === element.word);
+    if (verification.length === 0) {
+      await BackendAPIController.createUserWord(
+        element.id,
+        'hard',
+        element,
+      );
+    }
+  }
+
+  async addStudiedWords(element: IWord): Promise<void> {
+    const hardWordUser = await BackendAPIController.getAllUserWords() as unknown as IUserWords[];
+    const verification = hardWordUser.filter((h) => h.difficulty === 'study' && h.optional.word === element.word);
+    if (verification.length === 0) {
+      await BackendAPIController.createUserWord(
+        element.id,
+        'study',
+        element,
+      );
+    }
+  }
+
+  async deleteUserWords(element: IWord, difficulty: string): Promise<void> {
+    const wordUser = await BackendAPIController.getAllUserWords() as unknown as IUserWords[];
+    wordUser.forEach(async (w) => {
+      if (w && w.difficulty === difficulty) {
+        await BackendAPIController.deleteUserWord(element.id);
+      }
+    });
+  }
+
+  async linkGames(startTheGame: IWord[], number: number): Promise<void> {
+    await this.checkAutirisationBook();
+    const audiocall = document.querySelector('.link-games__audiocall') as HTMLDivElement;
+    const sprint = document.querySelector('.link-games__sprint') as HTMLDivElement;
+    const workPages = document.querySelector('.work') as HTMLElement;
+    audiocall.onclick = async () => {
+      workPages.innerHTML = '<div class="audiocall__game"></div>';
+      this.audiocall.render(startTheGame);
+      this.footer.displayFooter();
+    };
+    sprint.onclick = async () => {
+      const wordsAllHard = [] as IWord[];
+      let n = number;
+      const processArray = async () => {
+        for (let i = n - 1; i > n - 4; i -= 1) {
+          if (i < 0) {
+            n = 30;
+            i = 30;
+          }
+          // eslint-disable-next-line max-len, no-await-in-loop
+          const array = await BackendAPIController.getAllWords(i, this.numberHard) as IWord[];
+          array.forEach((e) => wordsAllHard.push(e));
+        }
+      };
+      await processArray();
+      const arrayStartGame = startTheGame.concat(wordsAllHard);
+      workPages.innerHTML = '<div class="sprintgame__container"></div>';
+      this.sprintGame.render(arrayStartGame);
+      this.footer.displayFooter();
+    };
   }
 }
 export default Book;

@@ -33,7 +33,7 @@ class Home {
                       fill="black"
                     />
                   </svg>
-                  <span> Julia Filippova</span></a>
+                  <span class="team__text"> Julia Filippova</span></a>
                 <p>Сделала стартовую страницу</p>
               </li>
               <li>
@@ -51,7 +51,7 @@ class Home {
                       fill="black"
                     />
                   </svg>
-                  <span> Stepan Volkov</span></a>
+                  <span class="team__text"> Stepan Volkov</span></a>
                   <p>Реализация авторизации и регистрации пользователя</p>
               </li>
               <li>
@@ -69,7 +69,7 @@ class Home {
                       fill="black"
                     />
                   </svg>
-                  <span> Oleksandr Kotlubieiev</span></a>
+                  <span class="team__text"> Oleksandr Kotlubieiev</span></a>
                   <p>Организация работы с бэкендом, игры</p>
               </li>
             </ul>

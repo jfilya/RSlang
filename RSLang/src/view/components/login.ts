@@ -52,6 +52,7 @@ export default class Login {
     const loginBtn = document.querySelector('.login__btn');
     const loginErrorText = document.querySelector('.login__error__text') as HTMLElement;
     const loginCloseBtn = document.querySelectorAll('.login__close__btn');
+    const logoutBtn = document.querySelector('.header__logout');
     loginBtn?.addEventListener('click', async (e) => {
       e.preventDefault();
       const userEmail = document.getElementById('login-email') as HTMLInputElement;
@@ -61,6 +62,8 @@ export default class Login {
           registerWrapper?.classList.remove('register__popup__wrapper_active');
           loginWrapper?.classList.remove('login__popup__wrapper_active');
           loginBg?.classList.remove('login__background_active');
+          headerLoginBtn?.classList.add('header_hidden');
+          logoutBtn?.classList.remove('header_hidden');
         })
         .catch(() => {
           loginErrorText.textContent = 'Неправельный логин или пароль';

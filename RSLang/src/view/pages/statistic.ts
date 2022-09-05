@@ -45,7 +45,6 @@ class Statistic {
 
   charts(stats: (string | number)[][]) {
     google.charts.load('current', { packages: ['corechart', 'bar'] });
-    google.charts.setOnLoadCallback(drawMultSeries);
 
     function drawMultSeries() {
       const data = google.visualization.arrayToDataTable(stats);
@@ -62,6 +61,8 @@ class Statistic {
       const chart = new google.visualization.BarChart((document.querySelector('.statistics__games')) as HTMLElement);
       chart.draw(data, options);
     }
+
+    google.charts.setOnLoadCallback(drawMultSeries);
   }
 }
 

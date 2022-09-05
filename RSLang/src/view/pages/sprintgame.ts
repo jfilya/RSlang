@@ -1,13 +1,14 @@
 import { BackendAPIController, BASE_URL } from '../../controller/api/api';
 import { IWord, ISprintWord, IGameConfigSprint } from '../../controller/api/interfaces';
 
+
 const startGameConfig = {
   points: 0,
   currentLamps: 0,
   allLamps: 3,
   currentBirds: 1,
   allBirds: 4,
-  currentTime: 10,
+  currentTime: 60,
   currentLevel: 0,
   wordsForGame: [],
   statistics: {
@@ -88,32 +89,33 @@ export default class SprintGame {
   }
 
   rightOrWrongAnswer(answer: boolean): void {
-    const currentTranslation = this.gameConfig.wordsForGame[this.gameConfig.currentLevel];
-    if ((currentTranslation.correctTranslate === currentTranslation.currentTranslate) === answer) {
-      currentTranslation.rightOrWrong = true;
-      if (this.gameConfig.currentLamps === this.gameConfig.allLamps) {
-        this.allLampsAreOn();
+    try {
+      const currentTranslation = this.gameConfig.wordsForGame[this.gameConfig.currentLevel];
+      if ((currentTranslation.correctTranslate === currentTranslation.currentTranslate) === answer) {
+        currentTranslation.rightOrWrong = true;
+        if (this.gameConfig.currentLamps === this.gameConfig.allLamps) {
+          this.allLampsAreOn();
+        } else {
+          this.gameConfig.currentLamps += 1;
+          this.lampOn(this.gameConfig.currentLamps);
+        }
+        this.gameConfig.points += (10 * this.gameConfig.currentBirds) + this.gameConfig.currentLamps;
       } else {
-        this.gameConfig.currentLamps += 1;
-        this.lampOn(this.gameConfig.currentLamps);
+        currentTranslation.rightOrWrong = false;
+        if (this.gameConfig.currentLamps === 0) {
+          this.allLampsAreOff();
+        } else {
+          this.allLampsOff();
+          this.gameConfig.currentLamps = 0;
+        }
       }
-      this.gameConfig.points += (10 * this.gameConfig.currentBirds) + this.gameConfig.currentLamps;
-      this.gameConfig.statistics.currentStreak += 1;
-    } else {
-      currentTranslation.rightOrWrong = false;
-      if (this.gameConfig.statistics.currentStreak > this.gameConfig.statistics.maxStreak) {
-        this.gameConfig.statistics.maxStreak = this.gameConfig.statistics.currentStreak;
-      }
-      this.gameConfig.statistics.currentStreak = 0;
-      if (this.gameConfig.currentLamps === 0) {
-        this.allLampsAreOff();
-      } else {
-        this.allLampsOff();
-        this.gameConfig.currentLamps = 0;
-      }
+      this.gameConfig.currentLevel += 1;
+      this.showTheWord();
+    } catch (err) {
+      window.addEventListener('keydown', (e) => {
+        e.preventDefault();
+      });
     }
-    this.gameConfig.currentLevel += 1;
-    this.showTheWord();
   }
 
   timer(): void {
@@ -139,10 +141,14 @@ export default class SprintGame {
   }
 
   showTheWord(): void {
-    const word = this.gameConfig.wordsForGame[this.gameConfig.currentLevel];
-    (document.querySelector('.sprintgame__original-word') as HTMLElement).textContent = word.word;
-    (document.querySelector('.sprintgame__translation') as HTMLElement).textContent = word.currentTranslate;
-    (document.querySelector('.sprintgame__points') as HTMLElement).textContent = String(this.gameConfig.points);
+    try {
+      const word = this.gameConfig.wordsForGame[this.gameConfig.currentLevel];
+      (document.querySelector('.sprintgame__original-word') as HTMLElement).textContent = word.word;
+      (document.querySelector('.sprintgame__translation') as HTMLElement).textContent = word.currentTranslate;
+      (document.querySelector('.sprintgame__points') as HTMLElement).textContent = String(this.gameConfig.points);
+    } catch (err) {
+      this.endGame();
+    }
   }
 
   endGame(): void {
@@ -195,7 +201,7 @@ export default class SprintGame {
   }
 
   showTheGame(firstTime: boolean): void {
-    this.container.innerHTML = `
+    (document.querySelector('.sprintgame__container') as HTMLDivElement).innerHTML = `
     <div class="sprintgame__card">
       <div class="sprintgame__outerdata">
         <div class="sprintgame__time"></div>
@@ -272,7 +278,7 @@ export default class SprintGame {
 
   render(startTheGame: IWord[] | null): string {
     setTimeout(() => {
-      this.container = document.querySelector('.sprintgame__container') as HTMLElement;
+      this.container = document.querySelector('.sprintgame__container') as HTMLDivElement;
     }, 0);
     return `<div class="sprintgame__container">${
       startTheGame ? this.startTheGame(startTheGame) : this.initGame()

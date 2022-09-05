@@ -50,6 +50,7 @@
     height: 100%;
     padding: 30px;
     @include stretch-width();
+    justify-content: space-around;
     align-items: start;
     &__img {
         max-height: 100%;

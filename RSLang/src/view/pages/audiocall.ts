@@ -115,6 +115,7 @@ class Audiocall {
     this.showGame();
   }
 
+  // eslint-disable-next-line max-len
   checkAnswer = (answer: string): boolean => answer === this.gameConfig.wordsForGame[this.gameConfig.currentLevel].translation;
 
   packageAnswers(allAnswerButton: Element[]) {

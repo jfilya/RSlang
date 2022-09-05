@@ -1,15 +1,31 @@
 import { BackendAPIController } from '../../controller/api/api';
 import { IStatisticsResp } from '../../controller/api/interfaces';
+import checkAutorization from '../../utils/checkAutorization';
 
 class Statistic {
+  async hideStats() {
+    const autorized = await checkAutorization();
+    const stats = document.querySelector('.statistics__learned-words');
+    const text = document.querySelector('.statistics__text');
+    if (!autorized) {
+        stats?.setAttribute('hidden', 'hidden');
+        text?.removeAttribute('hidden');
+      } else {
+        text?.setAttribute('hidden', 'hidden');
+        stats?.removeAttribute('hidden');
+    }
+  }
+
+
   sectionStatistic(): string {
     setTimeout(() => {
       this.getUserStatsFromGames();
+      this.hideStats();
     }, 0);
 
     return `
         <h3>Статистика</h3>
-        <p>Доступно только для зарегестрированный пользователей</p>
+        <p class="statistics__text">Доступно только для зарегестрированный пользователей</p>
         <div class="statistics__learned-words">Выученных слов в играх: <span class="learned_words"></span></div>
         <div class="statistics__games">
         <div>

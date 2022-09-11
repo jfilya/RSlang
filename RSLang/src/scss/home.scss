@@ -1,0 +1,74 @@
+@import './mixin.scss';
+@import './color.scss';
+.team {
+    &__title {
+        margin-bottom: 30px;
+    }
+    &__list {
+        display: flex;
+        li {
+            display: flex;
+            flex-direction: column;
+            margin: 100px 40px 0 40px;
+            max-width: 150px;
+            text-align: center;
+            p {
+                font-size: 14px;
+            }
+            &:nth-child(2n + 1) {
+                margin-top: 0px;
+            }
+        }
+        a {
+            display: flex;
+            align-items: center;
+            color: black;
+        }
+        img {
+            max-width: 150px;
+            border-radius: 100px;
+        }
+    }
+    &__text {
+        margin-left: 10px;
+    }
+}
+.start-page {
+    padding: 50px 0;
+    &__title {
+        font-size: 40px;
+        margin-bottom: 30px;
+        color: $highlightImportant;
+        max-width: 360px;
+        line-height: 35px;
+    }
+    &__text {
+        max-width: 550px;
+    }
+}
+.work-pages {
+    height: 100%;
+    padding: 30px;
+    @include stretch-width();
+    justify-content: space-around;
+    align-items: start;
+    &__img {
+        max-height: 100%;
+        max-width: 100%;
+        overflow: hidden;
+    }
+}
+@media screen and (max-width: 1000px) {
+    .work-pages {
+        flex-direction: column;
+    }
+    .team {
+        &__list {
+            flex-wrap: wrap;
+            justify-content: space-around;
+            li {
+                margin-top: 0px;
+            }
+        }
+    }
+}

@@ -1,0 +1,211 @@
+/****** HEART *****/
+
+.heart {
+  width: 1rem;
+  height: 1rem;
+  position: relative;
+
+  &::before {
+    position: absolute;
+    left: 0;
+    top: 0;
+    content: '❤️';
+    filter: grayscale(0);
+  }
+  
+  &_fail {
+    &::before {
+      content: '💔';
+      filter: grayscale(1);
+      animation: heart-fail 1s;
+      transition: filter 2s;
+    }
+  }
+}
+  
+.hearts {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 1.5rem;
+}
+  
+@keyframes heart-fail {
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+  
+  10% {
+    transform: rotate(40deg) scale(1.2);
+  }
+  
+  20% {
+    transform: rotate(-40deg) scale(0.8);
+  }
+  
+  40% {
+    transform: rotate(30deg) scale(1.3);
+  }
+  
+  60% {
+    transform: rotate(-20deg) scale(0.8);
+  }
+  
+  80% {
+    transform: rotate(10deg) scale(1.1);
+  }
+    
+  100% {
+    transform: rotate(0deg) scale(1);
+  }
+}
+  
+/****** BUTTON *****/
+  
+.answer-button {
+  min-width: 200px;
+  background-color: aqua;
+  padding: 1rem 2rem;
+  border-radius: 0.6rem;
+  text-transform: uppercase;
+  transition: background-color 0.5s;
+  
+  &:hover {
+    background-color: aquamarine;
+  }
+  
+  &:active {
+    background-color: cyan;
+  }
+}
+
+.reset_the_game {
+  background-color: $highlightImportant;
+  border-radius: 0.6rem;
+  display: block;
+  margin: auto;
+  margin-top: 1.5rem;
+  padding: 1rem 1rem;
+
+  &:hover {
+    background-color: rgb(160, 221, 75);
+  }
+  
+  &:active {
+    background-color: rgb(153, 255, 0);
+  }
+}
+
+.audio__btn {
+  background-color: rgb(47, 47, 185);
+  padding: 1rem 1rem;
+  border-radius: 0.6rem;
+  text-transform: uppercase;
+  transition: background-color 0.5s;
+  color: white;
+  display: block;
+  margin: auto;
+  margin-bottom: 1.5rem;
+  
+  &:hover {
+    background-color: rgb(122, 117, 163);
+  }
+  
+  &:active {
+    background-color: rgb(9, 30, 90);
+  }
+}
+// starting the game
+.games__title {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.games {
+  display: flex;
+  justify-content: space-around;
+  gap: 35px;
+  margin-bottom: 8rem;
+}
+
+.game__btn {
+  background-color: $highlightImportant;
+  margin-top: 0.8rem;
+  border: 1px solid black;
+  width: 200px;
+  height: 50px;
+  font-weight: 800;
+  border-radius: 0.6rem;
+}
+
+.audiocall__game {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  margin: 3rem;
+
+  p {
+    text-align: center;
+  }
+}
+
+.audiocall__game {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  margin: 3rem;
+
+  p {
+    text-align: center;
+  }
+}
+
+.audiocall__title {
+  font-size: 2rem;
+  font-style: italic;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.group_of_words {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  gap: 15px;
+  margin-top: 2rem;
+
+  &__elem {
+    width: 40px;
+    height: 40px;
+    background-color: $highlightImportant;
+    text-align: center;
+    padding-top: 5px;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+}
+
+.results {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  
+  h2 {
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+
+  .results__elems {
+    padding: 0.3rem;
+  }
+
+  .results__elems::first-letter {
+    text-transform: uppercase;
+  }
+}
+
+   
